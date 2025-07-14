@@ -3,6 +3,14 @@ import { Button } from "@/components/ui/button";
 import { skills } from "@/data/skills";
 import { projects } from "@/data/projects";
 import { workExperience, education } from "@/data/experience";
+import {
+  User,
+  FolderGit2,
+  Briefcase,
+  GraduationCap,
+  Mail,
+  Wrench,
+} from "lucide-react";
 
 export default function Home() {
   return (
@@ -25,9 +33,11 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl">
+              <FolderGit2 className="inline-block mr-2 w-5 h-5" />
               View Portfolio
             </Button>
             <Button className="px-8 py-3 border-2 border-border text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-300">
+              <Wrench className="inline-block mr-2 w-5 h-5" />
               Download Resume
             </Button>
           </div>
@@ -37,8 +47,8 @@ export default function Home() {
       {/* About Section */}
       <section id="about" className="py-16 px-4 sm:px-6 lg:px-8 bg-card">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center text-card-foreground mb-12">
-            About Me
+          <h2 className="text-3xl sm:text-4xl font-bold text-center text-card-foreground mb-12 flex items-center justify-center gap-2">
+            <User className="w-7 h-7 text-primary" /> About Me
           </h2>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -57,12 +67,18 @@ export default function Home() {
             </div>
             <div className="bg-primary p-1 rounded-lg">
               <div className="bg-background p-8 rounded-lg">
-                <h3 className="text-xl font-semibold text-foreground mb-4">
-                  Skills & Technologies
+                <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+                  <Wrench className="w-5 h-5 text-primary" /> Skills &
+                  Technologies
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   {skills.map(skill => (
-                    <div key={skill} className="text-muted-foreground">
+                    <div
+                      key={skill}
+                      className="text-muted-foreground flex items-center gap-2"
+                    >
+                      {/* Optionally, add a dot or wrench icon for each skill */}
+                      <span className="w-2 h-2 rounded-full bg-primary inline-block" />
                       {skill}
                     </div>
                   ))}
@@ -76,8 +92,8 @@ export default function Home() {
       {/* Projects Section */}
       <section id="projects" className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center text-foreground mb-12">
-            Featured Projects
+          <h2 className="text-3xl sm:text-4xl font-bold text-center text-foreground mb-12 flex items-center justify-center gap-2">
+            <FolderGit2 className="w-7 h-7 text-primary" /> Featured Projects
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map(project => (
@@ -89,7 +105,8 @@ export default function Home() {
                   {project.highlight || project.title}
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-semibold text-card-foreground mb-2">
+                  <h3 className="text-xl font-semibold text-card-foreground mb-2 flex items-center gap-2">
+                    <FolderGit2 className="w-5 h-5 text-primary" />{" "}
                     {project.title}
                   </h3>
                   <p className="text-muted-foreground mb-4">
@@ -99,8 +116,18 @@ export default function Home() {
                     {project.tags.map(tag => (
                       <span
                         key={tag}
-                        className="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full"
+                        className="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full flex items-center gap-1"
                       >
+                        {/* Optionally, add a small icon for certain tags */}
+                        {tag === "C++" && (
+                          <Wrench className="w-3 h-3 text-primary" />
+                        )}
+                        {tag === "Unity" && (
+                          <User className="w-3 h-3 text-primary" />
+                        )}
+                        {tag === "AI" && (
+                          <Mail className="w-3 h-3 text-primary" />
+                        )}
                         {tag}
                       </span>
                     ))}
@@ -115,13 +142,14 @@ export default function Home() {
       {/* Resume Section */}
       <section id="resume" className="py-16 px-4 sm:px-6 lg:px-8 bg-card">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center text-card-foreground mb-12">
-            Experience & Education
+          <h2 className="text-3xl sm:text-4xl font-bold text-center text-card-foreground mb-12 flex items-center justify-center gap-2">
+            <Briefcase className="w-7 h-7 text-primary" /> Experience &
+            Education
           </h2>
           <div className="grid md:grid-cols-2 gap-12">
             <div>
-              <h3 className="text-2xl font-semibold text-card-foreground mb-6">
-                Work Experience
+              <h3 className="text-2xl font-semibold text-card-foreground mb-6 flex items-center gap-2">
+                <Briefcase className="w-5 h-5 text-primary" /> Work Experience
               </h3>
               <div className="space-y-6">
                 {workExperience.map(exp => (
@@ -129,8 +157,8 @@ export default function Home() {
                     key={exp.title}
                     className={`border-l-4 border-${exp.color} pl-6`}
                   >
-                    <h4 className="text-lg font-semibold text-card-foreground">
-                      {exp.title}
+                    <h4 className="text-lg font-semibold text-card-foreground flex items-center gap-2">
+                      <Briefcase className="w-4 h-4 text-primary" /> {exp.title}
                     </h4>
                     <p className={`text-${exp.color}`}>
                       {exp.company} • {exp.period}
@@ -143,8 +171,8 @@ export default function Home() {
               </div>
             </div>
             <div>
-              <h3 className="text-2xl font-semibold text-card-foreground mb-6">
-                Education
+              <h3 className="text-2xl font-semibold text-card-foreground mb-6 flex items-center gap-2">
+                <GraduationCap className="w-5 h-5 text-primary" /> Education
               </h3>
               <div className="space-y-6">
                 {education.map(edu => (
@@ -152,7 +180,8 @@ export default function Home() {
                     key={edu.degree}
                     className="border-l-4 border-secondary pl-6"
                   >
-                    <h4 className="text-lg font-semibold text-card-foreground">
+                    <h4 className="text-lg font-semibold text-card-foreground flex items-center gap-2">
+                      <GraduationCap className="w-4 h-4 text-primary" />{" "}
                       {edu.degree}
                     </h4>
                     <p className="text-secondary-foreground">
@@ -172,8 +201,8 @@ export default function Home() {
       {/* Contact Section */}
       <section id="contact" className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8">
-            Let's Work Together
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 flex items-center justify-center gap-2">
+            <Mail className="w-7 h-7 text-primary" /> Let's Work Together
           </h2>
           <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
             I'm always interested in new opportunities and exciting projects.
@@ -181,9 +210,11 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl">
+              <Mail className="inline-block mr-2 w-5 h-5" />
               Send Message
             </Button>
             <Button className="px-8 py-3 border-2 border-border text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-300">
+              <User className="inline-block mr-2 w-5 h-5" />
               Schedule Call
             </Button>
           </div>
