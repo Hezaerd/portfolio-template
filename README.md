@@ -379,5 +379,6 @@ _Need help? Open an issue!_
 </p>
 
 <div align="center">
-<a href="https://github.com/hezaerd/portfolio-template/blob/main/LICENSE"><img src="https://img.shields.io/github/license/hezaerd/portfolio-template?style=for-the-badge&color=CBA6F7&logoColor=cdd6f4&labelColor=302D41" alt="LICENSE"></a>&nbsp;&nbsp;
+<a href="https://github.com/hezaerd/portfolio-template/blob/master/LICENSE"><img src="https://img.shields.io/github/license/hezaerd/portfolio-template?logoColor=cdd6f4&labelColor=302D41&color=CBA6F7
+" alt="LICENSE"></a>&nbsp;&nbsp;
 </div>
