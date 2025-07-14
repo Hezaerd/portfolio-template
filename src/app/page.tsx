@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/navbar";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
@@ -20,12 +21,12 @@ export default function Home() {
             graphics.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl">
+            <Button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl">
               View Portfolio
-            </button>
-            <button className="px-8 py-3 border-2 border-border text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-300">
+            </Button>
+            <Button className="px-8 py-3 border-2 border-border text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-300">
               Download Resume
-            </button>
+            </Button>
           </div>
         </div>
       </section>
@@ -312,12 +313,12 @@ export default function Home() {
             Feel free to reach out if you'd like to collaborate!
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl">
+            <Button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl">
               Send Message
-            </button>
-            <button className="px-8 py-3 border-2 border-border text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-300">
+            </Button>
+            <Button className="px-8 py-3 border-2 border-border text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-300">
               Schedule Call
-            </button>
+            </Button>
           </div>
         </div>
       </section>
