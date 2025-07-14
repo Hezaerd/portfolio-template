@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/sheet";
 import { Menu, Home, User, Briefcase, Mail, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 const navigationItems = [
   { name: "Home", href: "#home", icon: Home },
@@ -94,8 +95,9 @@ export function Navbar() {
             </NavigationMenu>
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
+          {/* Theme Toggle and CTA Button */}
+          <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
             <Button
               onClick={() => scrollToSection("#contact")}
               className="bg-primary hover:bg-primary/90 text-primary-foreground border-0 transition-all duration-300 shadow-lg hover:shadow-xl"
@@ -142,7 +144,13 @@ export function Navbar() {
                       </Button>
                     );
                   })}
-                  <div className="pt-4">
+                  <div className="pt-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-foreground">
+                        Theme
+                      </span>
+                      <ThemeToggle />
+                    </div>
                     <Button
                       onClick={() => scrollToSection("#contact")}
                       className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 transition-all duration-300"
