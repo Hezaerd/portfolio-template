@@ -28,7 +28,7 @@ export function Hero() {
           className="text-4xl sm:text-6xl font-bold text-foreground mb-2"
           {...fadeIn}
         >
-          Angel Gimer
+          Your Name
         </motion.h1>
         <motion.h2
           className="text-xl sm:text-2xl font-semibold text-primary mb-6 tracking-widest uppercase"

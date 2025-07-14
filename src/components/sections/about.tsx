@@ -25,10 +25,10 @@ export function About() {
             viewport={{ once: true }}
           >
             <p className="text-lg text-muted-foreground mb-6">
-              I'm a game and engine programmer with a strong background in C++,
-              C#, and real-time graphics. I enjoy building custom engines,
-              gameplay systems, and development tools that empower creators and
-              players alike.
+              I'm a passionate game and engine programmer with a strong
+              background in C++, C#, and real-time graphics. I enjoy building
+              custom engines, gameplay systems, and development tools that
+              empower creators and players alike.
             </p>
             <p className="text-lg text-muted-foreground">
               My experience spans engine architecture, physics, rendering, and

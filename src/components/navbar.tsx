@@ -167,7 +167,7 @@ export function Navbar() {
               href="#home"
               className="text-2xl font-bold text-primary hover:text-primary/80 transition-all duration-300"
             >
-              Angel
+              Portfolio
             </a>
           </div>
 
@@ -237,7 +237,7 @@ export function Navbar() {
                 <SheetHeader>
                   <SheetTitle className="text-left">
                     <span className="text-2xl font-bold text-primary">
-                      Angel
+                      Portfolio
                     </span>
                   </SheetTitle>
                   <SheetDescription className="text-left">

@@ -18,7 +18,7 @@ export function Footer() {
             viewport={{ once: true }}
           >
             <p className="text-muted-foreground mb-2">
-              © {new Date().getFullYear()} Angel Gimer. All rights reserved.
+              © {new Date().getFullYear()} Your Name. All rights reserved.
             </p>
             <p className="text-sm text-muted-foreground flex items-center justify-center md:justify-start gap-1">
               Portfolio crafted by{" "}
@@ -46,7 +46,7 @@ export function Footer() {
               variant="ghost"
               size="icon"
               onClick={() =>
-                window.open("https://github.com/angelgimer", "_blank")
+                window.open("https://github.com/yourusername", "_blank")
               }
               className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
             >
@@ -57,7 +57,7 @@ export function Footer() {
               variant="ghost"
               size="icon"
               onClick={() =>
-                window.open("https://linkedin.com/in/angelgimer", "_blank")
+                window.open("https://linkedin.com/in/yourusername", "_blank")
               }
               className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
             >
@@ -68,7 +68,7 @@ export function Footer() {
               variant="ghost"
               size="icon"
               onClick={() =>
-                window.open("https://twitter.com/angelgimer", "_blank")
+                window.open("https://twitter.com/yourusername", "_blank")
               }
               className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
             >
@@ -79,7 +79,7 @@ export function Footer() {
               variant="ghost"
               size="icon"
               onClick={() =>
-                window.open("mailto:contact@angelgimer.com", "_blank")
+                window.open("mailto:your.email@example.com", "_blank")
               }
               className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
             >

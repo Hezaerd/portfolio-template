@@ -15,44 +15,44 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Angel - Full Stack Developer",
+  title: "Your Name - Game Developer",
   description:
-    "Angel's portfolio showcasing innovative projects, technical expertise, and professional experience in software development.",
+    "A modern portfolio showcasing innovative projects, technical expertise, and professional experience in game development.",
   keywords: [
-    "Angel",
-    "Full Stack Developer",
+    "Game Developer",
+    "Engine Programmer",
     "Software Engineer",
     "Portfolio",
-    "React",
-    "Next.js",
-    "TypeScript",
+    "C++",
+    "Unity",
+    "Unreal Engine",
   ],
-  authors: [{ name: "Angel" }],
-  creator: "Angel",
+  authors: [{ name: "Your Name" }],
+  creator: "Your Name",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://angel-portfolio.vercel.app",
-    title: "Angel - Full Stack Developer",
+    url: "https://your-portfolio.vercel.app",
+    title: "Your Name - Game Developer",
     description:
-      "Angel's portfolio showcasing innovative projects, technical expertise, and professional experience in software development.",
-    siteName: "Angel Portfolio",
+      "A modern portfolio showcasing innovative projects, technical expertise, and professional experience in game development.",
+    siteName: "Your Portfolio",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Angel - Full Stack Developer Portfolio",
+        alt: "Your Name - Game Developer Portfolio",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Angel - Full Stack Developer",
+    title: "Your Name - Game Developer",
     description:
-      "Angel's portfolio showcasing innovative projects, technical expertise, and professional experience in software development.",
+      "A modern portfolio showcasing innovative projects, technical expertise, and professional experience in game development.",
     images: ["/og-image.png"],
-    creator: "@angel_dev",
+    creator: "@yourusername",
   },
   robots: {
     index: true,
