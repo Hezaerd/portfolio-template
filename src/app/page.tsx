@@ -70,6 +70,11 @@ export default function Home() {
               variant="default"
               size="lg"
               className="hover:bg-primary/70 hover:shadow-lg transition-all duration-200"
+              onClick={() => {
+                document.getElementById("projects")?.scrollIntoView({
+                  behavior: "smooth",
+                });
+              }}
             >
               <FolderGit2 className="w-5 h-5" />
               View Portfolio
