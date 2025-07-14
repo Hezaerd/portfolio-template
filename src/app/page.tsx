@@ -66,12 +66,16 @@ export default function Home() {
             {...slideUp}
             transition={{ duration: 0.4, delay: 0.3 }}
           >
-            <Button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 shadow-lg hover:shadow-xl">
-              <FolderGit2 className="inline-block mr-2 w-5 h-5" />
+            <Button
+              variant="default"
+              size="lg"
+              className="hover:bg-primary/70 hover:shadow-lg transition-all duration-200"
+            >
+              <FolderGit2 className="w-5 h-5" />
               View Portfolio
             </Button>
-            <Button className="px-8 py-3 border-2 border-border text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200">
-              <Wrench className="inline-block mr-2 w-5 h-5" />
+            <Button variant="outline" size="lg">
+              <Wrench className="w-5 h-5" />
               Download Resume
             </Button>
           </motion.div>
@@ -320,12 +324,16 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
           >
-            <Button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 shadow-lg hover:shadow-xl">
-              <Mail className="inline-block mr-2 w-5 h-5" />
+            <Button
+              variant="default"
+              size="lg"
+              className="hover:bg-primary/70 hover:shadow-lg transition-all duration-200"
+            >
+              <Mail className="w-5 h-5" />
               Send Message
             </Button>
-            <Button className="px-8 py-3 border-2 border-border text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200">
-              <User className="inline-block mr-2 w-5 h-5" />
+            <Button variant="outline" size="lg">
+              <User className="w-5 h-5" />
               Schedule Call
             </Button>
           </motion.div>
