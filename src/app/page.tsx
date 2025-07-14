@@ -1,3 +1,5 @@
+"use client";
+
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { skills } from "@/data/skills";
@@ -11,6 +13,20 @@ import {
   Mail,
   Wrench,
 } from "lucide-react";
+import { motion } from "motion/react";
+
+// Lightweight animation variants
+const fadeIn = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  transition: { duration: 0.3 },
+};
+
+const slideUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.4 },
+};
 
 export default function Home() {
   return (
@@ -18,40 +34,69 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <section id="home" className="pt-20 pb-16 px-4 sm:px-6 lg:px-8">
+      <section
+        id="home"
+        className="h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8"
+      >
         <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-6xl font-bold text-foreground mb-2">
+          <motion.h1
+            className="text-4xl sm:text-6xl font-bold text-foreground mb-2"
+            {...fadeIn}
+          >
             Angel Gimer
-          </h1>
-          <h2 className="text-xl sm:text-2xl font-semibold text-primary mb-6 tracking-widest uppercase">
+          </motion.h1>
+          <motion.h2
+            className="text-xl sm:text-2xl font-semibold text-primary mb-6 tracking-widest uppercase"
+            {...slideUp}
+            transition={{ duration: 0.4, delay: 0.1 }}
+          >
             Game/Engine Programmer
-          </h2>
-          <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+          </motion.h2>
+          <motion.p
+            className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto"
+            {...slideUp}
+            transition={{ duration: 0.4, delay: 0.2 }}
+          >
             Passionate about building high-performance game engines, tools, and
             interactive experiences. Specialized in C++, C#, and real-time
             graphics.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl">
+          </motion.p>
+          <motion.div
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+            {...slideUp}
+            transition={{ duration: 0.4, delay: 0.3 }}
+          >
+            <Button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 shadow-lg hover:shadow-xl">
               <FolderGit2 className="inline-block mr-2 w-5 h-5" />
               View Portfolio
             </Button>
-            <Button className="px-8 py-3 border-2 border-border text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-300">
+            <Button className="px-8 py-3 border-2 border-border text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200">
               <Wrench className="inline-block mr-2 w-5 h-5" />
               Download Resume
             </Button>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* About Section */}
       <section id="about" className="py-16 px-4 sm:px-6 lg:px-8 bg-card">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center text-card-foreground mb-12 flex items-center justify-center gap-2">
+          <motion.h2
+            className="text-3xl sm:text-4xl font-bold text-center text-card-foreground mb-12 flex items-center justify-center gap-2"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            viewport={{ once: true }}
+          >
             <User className="w-7 h-7 text-primary" /> About Me
-          </h2>
+          </motion.h2>
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              viewport={{ once: true }}
+            >
               <p className="text-lg text-muted-foreground mb-6">
                 I'm a game and engine programmer with a strong background in
                 C++, C#, and real-time graphics. I enjoy building custom
@@ -64,27 +109,38 @@ export default function Home() {
                 technical challenges and collaborating with multidisciplinary
                 teams.
               </p>
-            </div>
-            <div className="bg-primary p-1 rounded-lg">
+            </motion.div>
+            <motion.div
+              className="bg-primary p-1 rounded-lg"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
               <div className="bg-background p-8 rounded-lg">
                 <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
                   <Wrench className="w-5 h-5 text-primary" /> Skills &
                   Technologies
                 </h3>
-                <div className="grid grid-cols-2 gap-4">
+                <motion.div
+                  className="grid grid-cols-2 gap-4"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.4 }}
+                  viewport={{ once: true }}
+                >
                   {skills.map(skill => (
                     <div
                       key={skill}
                       className="text-muted-foreground flex items-center gap-2"
                     >
-                      {/* Optionally, add a dot or wrench icon for each skill */}
                       <span className="w-2 h-2 rounded-full bg-primary inline-block" />
                       {skill}
                     </div>
                   ))}
-                </div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -92,14 +148,24 @@ export default function Home() {
       {/* Projects Section */}
       <section id="projects" className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center text-foreground mb-12 flex items-center justify-center gap-2">
+          <motion.h2
+            className="text-3xl sm:text-4xl font-bold text-center text-foreground mb-12 flex items-center justify-center gap-2"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
             <FolderGit2 className="w-7 h-7 text-primary" /> Featured Projects
-          </h2>
+          </motion.h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map(project => (
-              <div
+            {projects.map((project, index) => (
+              <motion.div
                 key={project.title}
-                className="bg-card rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 border border-border"
+                className="bg-card rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200 border border-border"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                viewport={{ once: true }}
               >
                 <div className="h-48 bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold">
                   {project.highlight || project.title}
@@ -118,7 +184,6 @@ export default function Home() {
                         key={tag}
                         className="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full flex items-center gap-1"
                       >
-                        {/* Optionally, add a small icon for certain tags */}
                         {tag === "C++" && (
                           <Wrench className="w-3 h-3 text-primary" />
                         )}
@@ -133,7 +198,7 @@ export default function Home() {
                     ))}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -142,16 +207,33 @@ export default function Home() {
       {/* Resume Section */}
       <section id="resume" className="py-16 px-4 sm:px-6 lg:px-8 bg-card">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center text-card-foreground mb-12 flex items-center justify-center gap-2">
+          <motion.h2
+            className="text-3xl sm:text-4xl font-bold text-center text-card-foreground mb-12 flex items-center justify-center gap-2"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
             <Briefcase className="w-7 h-7 text-primary" /> Experience &
             Education
-          </h2>
+          </motion.h2>
           <div className="grid md:grid-cols-2 gap-12">
-            <div>
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
               <h3 className="text-2xl font-semibold text-card-foreground mb-6 flex items-center gap-2">
                 <Briefcase className="w-5 h-5 text-primary" /> Work Experience
               </h3>
-              <div className="space-y-6">
+              <motion.div
+                className="space-y-6"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                viewport={{ once: true }}
+              >
                 {workExperience.map(exp => (
                   <div
                     key={exp.title}
@@ -168,13 +250,24 @@ export default function Home() {
                     </p>
                   </div>
                 ))}
-              </div>
-            </div>
-            <div>
+              </motion.div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
               <h3 className="text-2xl font-semibold text-card-foreground mb-6 flex items-center gap-2">
                 <GraduationCap className="w-5 h-5 text-primary" /> Education
               </h3>
-              <div className="space-y-6">
+              <motion.div
+                className="space-y-6"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                viewport={{ once: true }}
+              >
                 {education.map(edu => (
                   <div
                     key={edu.degree}
@@ -192,8 +285,8 @@ export default function Home() {
                     </p>
                   </div>
                 ))}
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -201,23 +294,41 @@ export default function Home() {
       {/* Contact Section */}
       <section id="contact" className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 flex items-center justify-center gap-2">
+          <motion.h2
+            className="text-3xl sm:text-4xl font-bold text-foreground mb-8 flex items-center justify-center gap-2"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
             <Mail className="w-7 h-7 text-primary" /> Let's Work Together
-          </h2>
-          <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p
+            className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
             I'm always interested in new opportunities and exciting projects.
             Feel free to reach out if you'd like to collaborate!
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl">
+          </motion.p>
+          <motion.div
+            className="flex flex-col sm:flex-row gap-6 justify-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
+            <Button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 shadow-lg hover:shadow-xl">
               <Mail className="inline-block mr-2 w-5 h-5" />
               Send Message
             </Button>
-            <Button className="px-8 py-3 border-2 border-border text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-300">
+            <Button className="px-8 py-3 border-2 border-border text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200">
               <User className="inline-block mr-2 w-5 h-5" />
               Schedule Call
             </Button>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>
