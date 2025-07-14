@@ -1,23 +1,28 @@
 # Portfolio Website Development Roadmap
 
 ## Project Overview
+
 Building a sleek and modern single-page portfolio website using:
+
 - NextJS 14 (App Router)
 - TailwindCSS for styling
 - shadcn/ui for UI components
 - TypeScript for type safety
+- Bun for package manager
 
 ## Development Phases
 
 ### Phase 1: Project Setup & Foundation ✅
+
 - [x] Initialize NextJS project with TypeScript
 - [x] Install and configure TailwindCSS
-- [ ] Install and configure shadcn/ui
-- [ ] Set up project structure and folders
+- [x] Install and configure shadcn/ui
+- [x] Set up project structure and folders
 - [ ] Configure ESLint and Prettier
 - [ ] Set up basic layout and routing
 
 ### Phase 2: Design System & Components
+
 - [ ] Design color scheme and typography
 - [ ] Create reusable UI components
 - [ ] Set up dark/light mode toggle
@@ -26,6 +31,7 @@ Building a sleek and modern single-page portfolio website using:
 - [ ] Create section components (About, Skills, Projects, Contact)
 
 ### Phase 3: Content Sections
+
 - [ ] Hero section with animated introduction
 - [ ] About section with personal information
 - [ ] Skills section with technology stack
@@ -35,6 +41,7 @@ Building a sleek and modern single-page portfolio website using:
 - [ ] Footer with social links
 
 ### Phase 4: Interactive Features
+
 - [ ] Smooth scrolling navigation
 - [ ] Animated scroll effects
 - [ ] Interactive project cards
@@ -43,6 +50,7 @@ Building a sleek and modern single-page portfolio website using:
 - [ ] Mobile-responsive design
 
 ### Phase 5: Performance & Polish
+
 - [ ] Image optimization
 - [ ] SEO optimization
 - [ ] Performance optimization
@@ -51,6 +59,7 @@ Building a sleek and modern single-page portfolio website using:
 - [ ] Final styling refinements
 
 ### Phase 6: Deployment
+
 - [ ] Build optimization
 - [ ] Deploy to Vercel/Netlify
 - [ ] Domain configuration
@@ -60,6 +69,7 @@ Building a sleek and modern single-page portfolio website using:
 ## Technical Requirements
 
 ### Core Technologies
+
 - NextJS 14 (App Router)
 - TypeScript
 - TailwindCSS
@@ -67,6 +77,7 @@ Building a sleek and modern single-page portfolio website using:
 - Framer Motion (for animations)
 
 ### Key Features
+
 - Single page application
 - Responsive design
 - Dark/light mode
@@ -76,6 +87,7 @@ Building a sleek and modern single-page portfolio website using:
 - Fast loading times
 
 ### File Structure
+
 ```
 src/
 ├── app/
@@ -96,11 +108,13 @@ src/
 ```
 
 ## Current Status: Phase 1 - Project Setup
+
 Starting with basic NextJS project setup and configuration.
 
 ## Notes
+
 - Focus on modern, clean design
 - Ensure excellent mobile experience
 - Optimize for performance
 - Include smooth animations
-- Make it accessible 
+- Make it accessible
