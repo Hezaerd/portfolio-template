@@ -18,7 +18,7 @@ Building a sleek and modern single-page portfolio website using:
 - [x] Install and configure TailwindCSS
 - [x] Install and configure shadcn/ui
 - [x] Set up project structure and folders
-- [ ] Configure ESLint and Prettier
+- [x] Configure ESLint and Prettier
 - [ ] Set up basic layout and routing
 
 ### Phase 2: Design System & Components
