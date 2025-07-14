@@ -144,19 +144,23 @@ export function Navbar() {
                       </Button>
                     );
                   })}
-                  <div className="pt-4 space-y-3">
-                    <div className="flex items-center justify-between">
+                  <div className="pt-6 space-y-4 border-t border-border">
+                    <div className="flex items-center justify-between py-2 px-4">
                       <span className="text-sm font-medium text-foreground">
                         Theme
                       </span>
-                      <ThemeToggle />
+                      <div className="flex items-center">
+                        <ThemeToggle />
+                      </div>
                     </div>
-                    <Button
-                      onClick={() => scrollToSection("#contact")}
-                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 transition-all duration-300"
-                    >
-                      Get In Touch
-                    </Button>
+                    <div className="px-4">
+                      <Button
+                        onClick={() => scrollToSection("#contact")}
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 transition-all duration-300"
+                      >
+                        Get In Touch
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </SheetContent>
