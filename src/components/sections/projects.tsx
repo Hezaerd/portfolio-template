@@ -20,7 +20,7 @@ export function Projects() {
   const [selectedProject, setSelectedProject] = useState<
     (typeof projects)[0] | null
   >(null);
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isMac, setIsMac] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -86,8 +86,11 @@ export function Projects() {
   }, []);
 
   return (
-    <section id="projects" className="py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+    <section
+      id="projects"
+      className="min-h-screen flex flex-col justify-center py-16 px-4 sm:px-6 lg:px-8"
+    >
+      <div className="max-w-7xl mx-auto w-full">
         <motion.h2
           className="text-3xl sm:text-4xl font-bold text-center text-foreground mb-8 flex items-center justify-center gap-2"
           initial={{ opacity: 0, y: 30 }}
@@ -148,7 +151,7 @@ export function Projects() {
           </button>
 
           {/* Carousel */}
-          <div className="overflow-hidden" ref={emblaRef}>
+          <div className="overflow-hidden py-8" ref={emblaRef}>
             <div className="flex">
               {filteredProjects.map((project, index) => (
                 <motion.div
@@ -162,23 +165,22 @@ export function Projects() {
                   <motion.div
                     className="bg-card rounded-lg shadow-lg overflow-hidden border border-border cursor-pointer mx-2 h-full"
                     onClick={() => setSelectedProject(project)}
-                    onHoverStart={() => setHoveredCard(index)}
+                    onHoverStart={() => setHoveredCard(project.title)}
                     onHoverEnd={() => setHoveredCard(null)}
                     whileHover={{
-                      y: -8,
-                      scale: 1.02,
+                      y: -12,
                       boxShadow:
-                        "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                      transition: { duration: 0.2, ease: "easeOut" },
+                        "0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+                      transition: { duration: 0.3, ease: "easeOut" },
                     }}
                     whileTap={{ scale: 0.98 }}
                   >
                     <motion.div
                       className="h-40 bg-gradient-to-br from-primary via-primary/90 to-primary/70 flex items-center justify-center text-primary-foreground text-lg font-bold p-4 text-center"
                       animate={{
-                        scale: hoveredCard === index ? 1.05 : 1,
+                        scale: hoveredCard === project.title ? 1.05 : 1,
                         filter:
-                          hoveredCard === index
+                          hoveredCard === project.title
                             ? "brightness(0.9)"
                             : "brightness(1)",
                       }}
@@ -191,7 +193,7 @@ export function Projects() {
                         className="text-lg font-semibold text-card-foreground mb-2 flex items-center gap-2"
                         animate={{
                           color:
-                            hoveredCard === index
+                            hoveredCard === project.title
                               ? "hsl(var(--primary))"
                               : "hsl(var(--card-foreground))",
                         }}
@@ -232,7 +234,7 @@ export function Projects() {
                         <motion.div
                           className="absolute bottom-0 left-0 h-0.5 bg-primary w-full"
                           animate={{
-                            scaleX: hoveredCard === index ? 1 : 0,
+                            scaleX: hoveredCard === project.title ? 1 : 0,
                           }}
                           style={{ originX: 0 }}
                           transition={{ duration: 0.3, ease: "easeOut" }}
