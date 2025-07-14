@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -29,9 +29,50 @@ const navigationItems = [
   { name: "Contact", href: "#contact", icon: Mail },
 ];
 
+// Custom hook to track active section
+function useActiveSection() {
+  const [activeSection, setActiveSection] = useState("home");
+
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -60% 0px", // Adjust these margins to fine-tune when sections become active
+      threshold: 0.1,
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id;
+          setActiveSection(sectionId);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions
+    );
+
+    // Observe all sections
+    const sections = document.querySelectorAll("section[id]");
+    sections.forEach(section => observer.observe(section));
+
+    return () => {
+      sections.forEach(section => observer.unobserve(section));
+    };
+  }, []);
+
+  return activeSection;
+}
+
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [underlineStyle, setUnderlineStyle] = useState({ width: 0, left: 0 });
+  const activeSection = useActiveSection();
+  const navItemRefs = useRef<{ [key: string]: HTMLElement | null }>({});
+  const navListRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,12 +86,68 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Update underline position when active section changes
+  useEffect(() => {
+    const updateUnderlinePosition = () => {
+      const activeNavItem = navItemRefs.current[activeSection];
+      const navList = navListRef.current;
+
+      if (activeNavItem && navList) {
+        const navListRect = navList.getBoundingClientRect();
+        const activeItemRect = activeNavItem.getBoundingClientRect();
+
+        const left = activeItemRect.left - navListRect.left;
+        const width = activeItemRect.width;
+
+        setUnderlineStyle({
+          left: left,
+          width: width,
+        });
+      }
+    };
+
+    // Small delay to ensure DOM is updated
+    const timeoutId = setTimeout(updateUnderlinePosition, 10);
+
+    return () => clearTimeout(timeoutId);
+  }, [activeSection]);
+
+  // Set initial position on mount
+  useEffect(() => {
+    const setInitialPosition = () => {
+      const homeNavItem = navItemRefs.current["home"];
+      const navList = navListRef.current;
+
+      if (homeNavItem && navList) {
+        const navListRect = navList.getBoundingClientRect();
+        const homeItemRect = homeNavItem.getBoundingClientRect();
+
+        const left = homeItemRect.left - navListRect.left;
+        const width = homeItemRect.width;
+
+        setUnderlineStyle({
+          left: left,
+          width: width,
+        });
+      }
+    };
+
+    // Wait for next tick to ensure refs are set
+    const timeoutId = setTimeout(setInitialPosition, 100);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
+
   const scrollToSection = (href: string) => {
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
     setIsMobileMenuOpen(false);
+  };
+
+  const isActive = (href: string) => {
+    return activeSection === href.replace("#", "");
   };
 
   return (
@@ -77,13 +174,22 @@ export function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden md:block">
             <NavigationMenu>
-              <NavigationMenuList className="space-x-1">
+              <NavigationMenuList
+                ref={navListRef}
+                className="space-x-1 relative"
+              >
                 {navigationItems.map(item => (
                   <NavigationMenuItem key={item.name}>
                     <NavigationMenuLink
+                      ref={el => {
+                        if (el) {
+                          navItemRefs.current[item.href.replace("#", "")] = el;
+                        }
+                      }}
                       className={cn(
                         navigationMenuTriggerStyle(),
-                        "bg-transparent hover:bg-accent hover:text-accent-foreground transition-all duration-300"
+                        "bg-transparent hover:bg-accent hover:text-accent-foreground transition-all duration-300",
+                        isActive(item.href) && "text-primary"
                       )}
                       onClick={() => scrollToSection(item.href)}
                     >
@@ -91,6 +197,15 @@ export function Navbar() {
                     </NavigationMenuLink>
                   </NavigationMenuItem>
                 ))}
+                {/* Sliding underline */}
+                <div
+                  className="absolute bottom-0 h-0.5 bg-primary rounded-full transition-all duration-300 ease-out"
+                  style={{
+                    left: `${underlineStyle.left}px`,
+                    width: `${underlineStyle.width}px`,
+                    transform: "translateY(-2px)", // Move it slightly up from the very bottom
+                  }}
+                />
               </NavigationMenuList>
             </NavigationMenu>
           </div>
@@ -136,11 +251,18 @@ export function Navbar() {
                       <Button
                         key={item.name}
                         variant="ghost"
-                        className="w-full justify-start text-left h-12 px-4 hover:bg-accent hover:text-accent-foreground transition-all duration-300"
+                        className={cn(
+                          "w-full justify-start text-left h-12 px-4 hover:bg-accent hover:text-accent-foreground transition-all duration-300 relative",
+                          isActive(item.href) &&
+                            "bg-accent text-accent-foreground border-l-2 border-primary"
+                        )}
                         onClick={() => scrollToSection(item.href)}
                       >
                         <Icon className="mr-3 h-5 w-5" />
                         {item.name}
+                        {isActive(item.href) && (
+                          <span className="absolute right-3 w-2 h-2 bg-primary rounded-full" />
+                        )}
                       </Button>
                     );
                   })}
