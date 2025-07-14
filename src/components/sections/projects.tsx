@@ -12,7 +12,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 
@@ -22,6 +22,15 @@ export function Projects() {
   >(null);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isMac, setIsMac] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Detect operating system
+  useEffect(() => {
+    const platform = navigator.platform.toLowerCase();
+    const userAgent = navigator.userAgent.toLowerCase();
+    setIsMac(platform.includes("mac") || userAgent.includes("mac"));
+  }, []);
 
   // Filter projects based on search term
   const filteredProjects = projects.filter(
@@ -62,6 +71,20 @@ export function Projects() {
     }
   }, [emblaApi, filteredProjects]);
 
+  // Keyboard shortcut to focus search (Ctrl+K or Cmd+K)
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "k") {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+        searchInputRef.current?.select();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <section id="projects" className="py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -87,11 +110,15 @@ export function Projects() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <input
               type="text"
-              placeholder="Search projects by name or tag..."
+              placeholder="Search projects by name, description, or tag..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-card-foreground placeholder-muted-foreground"
+              className="w-full pl-10 pr-16 py-3 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-card-foreground placeholder-muted-foreground"
+              ref={searchInputRef}
             />
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xs text-muted-foreground bg-secondary px-2 py-1 rounded border opacity-60">
+              <kbd className="font-mono">{isMac ? "⌘" : "Ctrl"} K</kbd>
+            </div>
           </div>
         </motion.div>
 
