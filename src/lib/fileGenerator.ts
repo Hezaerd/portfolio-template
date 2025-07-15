@@ -1,65 +1,72 @@
 import { OnboardingData } from "@/hooks/useOnboarding";
-import { usePortfolioStore } from "../stores/portfolio-store";
 
 export const generatePortfolioFiles = async (data: OnboardingData) => {
   try {
-    // Update each data file via API
-    const updatePromises = [
-      // Update personal info
-      fetch("/api/data/personal-info", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ personalInfo: data.personalInfo }),
-      }),
+    // Since we don't have API endpoints, we'll update the Zustand store directly
+    // and store the data in localStorage for persistence
 
-      // Update skills
-      fetch("/api/data/skills", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ skills: data.skills }),
-      }),
+    // Store individual data pieces in localStorage for potential file generation
+    const dataFiles = {
+      personalInfo: data.personalInfo,
+      skills: data.skills,
+      workExperience: data.workExperience,
+      education: data.education,
+      projects: data.projects,
+      contactConfig: data.contactForm,
+    };
 
-      // Update experience
-      fetch("/api/data/experience", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          workExperience: data.workExperience,
-          education: data.education,
-        }),
-      }),
+    // Store each data type individually
+    localStorage.setItem(
+      "portfolio-personal-info",
+      JSON.stringify(data.personalInfo)
+    );
+    localStorage.setItem("portfolio-skills", JSON.stringify(data.skills));
+    localStorage.setItem(
+      "portfolio-work-experience",
+      JSON.stringify(data.workExperience)
+    );
+    localStorage.setItem("portfolio-education", JSON.stringify(data.education));
+    localStorage.setItem("portfolio-projects", JSON.stringify(data.projects));
+    localStorage.setItem(
+      "portfolio-contact-config",
+      JSON.stringify(data.contactForm)
+    );
 
-      // Update projects
-      fetch("/api/data/projects", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projects: data.projects }),
-      }),
-
-      // Update contact config
-      fetch("/api/data/contact-config", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contactConfig: data.contactForm }),
-      }),
+    // Create file objects for potential download
+    const generatedFiles = [
+      {
+        filename: "personal-info.ts",
+        content: `export const personalInfo = ${JSON.stringify(data.personalInfo, null, 2)};`,
+      },
+      {
+        filename: "skills.ts",
+        content: `export const skills = ${JSON.stringify(data.skills, null, 2)};`,
+      },
+      {
+        filename: "experience.ts",
+        content: `export const workExperience = ${JSON.stringify(data.workExperience, null, 2)};\n\nexport const education = ${JSON.stringify(data.education, null, 2)};`,
+      },
+      {
+        filename: "projects.ts",
+        content: `export const projects = ${JSON.stringify(data.projects, null, 2)};`,
+      },
+      {
+        filename: "contact-config.ts",
+        content: `export const contactConfig = ${JSON.stringify(data.contactForm, null, 2)};`,
+      },
     ];
 
-    const responses = await Promise.all(updatePromises);
+    // Store generated files for potential download
+    localStorage.setItem(
+      "portfolio-generated-files",
+      JSON.stringify(generatedFiles)
+    );
 
-    // Check if all updates succeeded
-    const results = await Promise.all(responses.map(r => r.json()));
-    const failures = results.filter(r => !r.success);
-
-    if (failures.length > 0) {
-      throw new Error(
-        `Failed to update: ${failures.map(f => f.error).join(", ")}`
-      );
-    }
-
-    console.log("✅ All portfolio files updated successfully!");
+    console.log("✅ Portfolio data updated successfully!");
 
     // Update Zustand store immediately for real-time updates
     if (typeof window !== "undefined") {
+      const { usePortfolioStore } = await import("../stores/portfolio-store");
       const { updateAllData } = usePortfolioStore.getState();
       updateAllData({
         personalInfo: data.personalInfo,
@@ -75,7 +82,7 @@ export const generatePortfolioFiles = async (data: OnboardingData) => {
 
     return { success: true, message: "Portfolio updated successfully!" };
   } catch (error) {
-    console.error("Error updating portfolio files:", error);
+    console.error("Error updating portfolio data:", error);
     throw error;
   }
 };
