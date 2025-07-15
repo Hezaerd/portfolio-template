@@ -6,7 +6,6 @@ import { PortfolioProvider } from "@/components/providers/PortfolioProvider";
 import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
 import { EditOnboarding } from "@/components/onboarding/EditOnboarding";
 import { Toaster } from "@/components/ui/sonner";
-import { personalInfo } from "../data/personal-info";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,13 +18,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: `${personalInfo.name} - ${personalInfo.role}`,
-  description: personalInfo.bio,
-  icons: {
-    icon: "/favicon.ico",
-  },
-};
+// Dynamic metadata that updates when personal info changes
+export async function generateMetadata(): Promise<Metadata> {
+  // Dynamically import to get the latest data
+  const { personalInfo } = await import("../data/personal-info");
+
+  return {
+    title: `${personalInfo.name} - ${personalInfo.role}`,
+    description: personalInfo.bio,
+    icons: {
+      icon: "/favicon.ico",
+    },
+  };
+}
 
 export default function RootLayout({
   children,

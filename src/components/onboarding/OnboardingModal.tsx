@@ -19,6 +19,7 @@ import { FinalSetupStep } from "./steps/FinalSetupStep";
 import { generatePortfolioFiles } from "@/lib/fileGenerator";
 import { usePortfolioUpdates } from "../../hooks/usePortfolioUpdates";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
 
 const steps = [
   { title: "Personal Information", component: PersonalInfoStep },
@@ -55,19 +56,36 @@ export const OnboardingModal = () => {
     }
   };
 
-  const handleComplete = async () => {
+    const handleSaveProgress = async () => {
     try {
       // Update Zustand store immediately for instant UI updates
       updatePortfolioData(onboardingData);
 
-      // Then update the files
+      // Update the files with current progress (don't complete onboarding)
       await generatePortfolioFiles(onboardingData);
-      completeOnboarding();
+
+      toast.success("Progress saved successfully!", {
+        description: "Your portfolio data has been updated.",
+      });
+      console.log("✅ Progress saved successfully!");
     } catch (error) {
-      console.error("Error generating portfolio files:", error);
-      // Still complete onboarding even if file generation fails
-      completeOnboarding();
+      console.error("Error saving progress:", error);
+      toast.error("Failed to save progress", {
+        description: "Please try again or check the console for details.",
+      });
     }
+  };
+
+  const handleComplete = () => {
+    // Update Zustand store for immediate UI updates
+    updatePortfolioData(onboardingData);
+
+    // Simply mark onboarding as complete - files are saved via "Save Progress"
+    completeOnboarding();
+
+    toast.success("Onboarding completed!", {
+      description: "Your portfolio setup is now complete. Remember to save any final changes.",
+    });
   };
 
   const progressPercentage = ((currentStep + 1) / steps.length) * 100;
@@ -144,6 +162,17 @@ export const OnboardingModal = () => {
                     />
                   ))}
                 </div>
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSaveProgress}
+                  className="text-xs text-muted-foreground hover:text-primary"
+                >
+                  💾 Save Progress
+                </Button>
+
                 {hasCurrentStepErrors && (
                   <p className="text-xs text-red-600">
                     Please fix the errors above before continuing

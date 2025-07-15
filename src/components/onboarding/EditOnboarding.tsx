@@ -3,10 +3,23 @@
 import { useOnboardingContext } from "@/contexts/OnboardingContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Edit3, Download, Trash2, ChevronUp, ChevronDown } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import {
+  Edit3,
+  Download,
+  Trash2,
+  ChevronUp,
+  ChevronDown,
+  RefreshCw,
+  Settings,
+  Info,
+  FileText,
+} from "lucide-react";
 import { createDownloadLinks } from "@/lib/fileGenerator";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePortfolioUpdates } from "../../hooks/usePortfolioUpdates";
 
 export const EditOnboarding = () => {
   const {
@@ -18,9 +31,11 @@ export const EditOnboarding = () => {
     currentStep,
     setCurrentStep,
   } = useOnboardingContext();
+  const { reloadFromFiles } = usePortfolioUpdates();
   const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
   const [savedStep, setSavedStep] = useState<number | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isReloading, setIsReloading] = useState(false);
   const isDev = process.env.NODE_ENV === "development";
 
   const stepNames = [
@@ -39,7 +54,6 @@ export const EditOnboarding = () => {
         setGeneratedFiles(JSON.parse(files));
       }
 
-      // Check for saved step
       const savedStepStr = localStorage.getItem("onboarding-last-step");
       if (savedStepStr) {
         const stepNum = parseInt(savedStepStr, 10);
@@ -48,7 +62,6 @@ export const EditOnboarding = () => {
         }
       }
 
-      // Load collapsed state from localStorage
       const collapsedState = localStorage.getItem("dev-tools-collapsed");
       if (collapsedState === "true") {
         setIsCollapsed(true);
@@ -56,7 +69,6 @@ export const EditOnboarding = () => {
     }
   }, [isDev, stepNames.length]);
 
-  // Save collapsed state to localStorage
   useEffect(() => {
     if (isDev) {
       localStorage.setItem("dev-tools-collapsed", isCollapsed.toString());
@@ -77,15 +89,25 @@ export const EditOnboarding = () => {
   };
 
   const handleEditOnboarding = () => {
-    // Save current page position before opening modal
     localStorage.setItem("onboarding-last-step", currentStep.toString());
     setIsOnboardingOpen(true);
   };
 
   const handleResetOnboarding = () => {
-    // Clear saved step when resetting
     localStorage.removeItem("onboarding-last-step");
     resetOnboarding();
+  };
+
+  const handleReloadFromFiles = async () => {
+    setIsReloading(true);
+    try {
+      await reloadFromFiles();
+      console.log("✅ Data reloaded from files");
+    } catch (error) {
+      console.error("❌ Error reloading from files:", error);
+    } finally {
+      setIsReloading(false);
+    }
   };
 
   const toggleCollapse = () => {
@@ -96,34 +118,49 @@ export const EditOnboarding = () => {
     return null;
   }
 
+  // Quick status indicators
+  const statusData = {
+    onboardingComplete: isCompleted,
+    dataCustomized: isDataCustomized(onboardingData),
+    personalInfoSet:
+      onboardingData.personalInfo.name !== "Your Name" &&
+      onboardingData.personalInfo.name !== "",
+    skillsCount: onboardingData.skills.length,
+    projectsCount: onboardingData.projects.length,
+    contactService: onboardingData.contactForm.service,
+  };
+
   return (
     <motion.div
-      className="fixed bottom-4 right-4 w-80 z-50"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="fixed bottom-4 right-4 z-50"
     >
-      <Card className="shadow-lg border-primary/20 bg-primary/5">
-        <CardHeader className="pb-3 pt-3">
+      <Card className="w-80 shadow-lg border-2 border-red-200 dark:border-red-800">
+        <CardHeader className="py-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm font-medium">
-              🚀 Development Tools
-            </CardTitle>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleCollapse}
-                className="h-6 w-6 p-0 hover:bg-primary/10"
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              <span className="leading-none">Dev Tools</span>
+              <Badge
+                variant="secondary"
+                className="text-xs leading-none px-2 py-0.5"
               >
-                <motion.div
-                  animate={{ rotate: isCollapsed ? 180 : 0 }}
-                  transition={{ duration: 0.2, ease: "easeInOut" }}
-                >
-                  <ChevronDown className="h-4 w-4" />
-                </motion.div>
-              </Button>
-            </motion.div>
+                Development
+              </Badge>
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleCollapse}
+              className="h-8 w-8 p-0"
+            >
+              {isCollapsed ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </Button>
           </div>
         </CardHeader>
 
@@ -136,133 +173,175 @@ export const EditOnboarding = () => {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               style={{ overflow: "hidden" }}
             >
-              <CardContent className="space-y-3 pt-0">
-                <motion.div
-                  initial={{ y: -10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.1, duration: 0.2 }}
-                  className="text-xs text-muted-foreground space-y-1"
-                >
-                  <div>
-                    Onboarding Status:{" "}
-                    {isCompleted ? "Completed" : "Not Started"}
-                  </div>
-                  <div>
-                    Data Status:{" "}
-                    {isDataCustomized(onboardingData)
-                      ? "Customized"
-                      : "Default"}
-                  </div>
-                  <div>
-                    Personal Info:{" "}
-                    {onboardingData.personalInfo.name !== "Your Name"
-                      ? "✓ Set"
-                      : "Default"}
-                  </div>
-                  <div>Skills: {onboardingData.skills.length} items</div>
-                  <div>Projects: {onboardingData.projects.length} items</div>
-                  <div>
-                    Contact Service: {onboardingData.contactForm.service}
-                  </div>
-                  <div>Current Step: {currentStep + 1}/6</div>
-                  {savedStep !== null && (
-                    <div>
-                      Saved Step: {savedStep + 1}/6 ({stepNames[savedStep]})
-                    </div>
-                  )}
-                </motion.div>
+              <CardContent className="pt-0">
+                <Tabs defaultValue="overview" className="w-full">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="overview" className="text-xs">
+                      <Info className="h-3 w-3 mr-1" />
+                      Status
+                    </TabsTrigger>
+                    <TabsTrigger value="actions" className="text-xs">
+                      <Settings className="h-3 w-3 mr-1" />
+                      Actions
+                    </TabsTrigger>
+                    <TabsTrigger value="files" className="text-xs">
+                      <FileText className="h-3 w-3 mr-1" />
+                      Files
+                    </TabsTrigger>
+                  </TabsList>
 
-                <motion.div
-                  initial={{ y: -10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.15, duration: 0.2 }}
-                  className="flex flex-col gap-2"
-                >
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
+                  <TabsContent value="overview" className="space-y-3 mt-3">
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="flex items-center justify-between">
+                        <span>Onboarding:</span>
+                        <Badge
+                          variant={
+                            statusData.onboardingComplete
+                              ? "default"
+                              : "secondary"
+                          }
+                          className="text-xs"
+                        >
+                          {statusData.onboardingComplete ? "Done" : "Pending"}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Data:</span>
+                        <Badge
+                          variant={
+                            statusData.dataCustomized ? "default" : "secondary"
+                          }
+                          className="text-xs"
+                        >
+                          {statusData.dataCustomized ? "Custom" : "Default"}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Personal:</span>
+                        <Badge
+                          variant={
+                            statusData.personalInfoSet ? "default" : "secondary"
+                          }
+                          className="text-xs"
+                        >
+                          {statusData.personalInfoSet ? "Set" : "Default"}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Contact:</span>
+                        <Badge
+                          variant={
+                            statusData.contactService !== "none"
+                              ? "default"
+                              : "secondary"
+                          }
+                          className="text-xs"
+                        >
+                          {statusData.contactService}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 text-xs text-center">
+                      <div>
+                        <div className="font-medium">
+                          {statusData.skillsCount}
+                        </div>
+                        <div className="text-muted-foreground">Skills</div>
+                      </div>
+                      <div>
+                        <div className="font-medium">
+                          {statusData.projectsCount}
+                        </div>
+                        <div className="text-muted-foreground">Projects</div>
+                      </div>
+                      <div>
+                        <div className="font-medium">{currentStep + 1}/6</div>
+                        <div className="text-muted-foreground">Step</div>
+                      </div>
+                    </div>
+
+                    {savedStep !== null && (
+                      <div className="text-xs text-center p-2 bg-muted rounded">
+                        <span className="text-muted-foreground">
+                          Saved at:{" "}
+                        </span>
+                        <span className="font-medium">
+                          {stepNames[savedStep]}
+                        </span>
+                      </div>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="actions" className="space-y-2 mt-3">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={handleEditOnboarding}
-                      className="flex items-center gap-2 w-full"
+                      className="w-full flex items-center gap-2"
                     >
                       <Edit3 className="h-4 w-4" />
                       Edit Onboarding
                     </Button>
-                  </motion.div>
 
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleReloadFromFiles}
+                      disabled={isReloading}
+                      className="w-full flex items-center gap-2 text-blue-600 hover:text-blue-700"
+                    >
+                      <RefreshCw
+                        className={`h-4 w-4 ${isReloading ? "animate-spin" : ""}`}
+                      />
+                      Reload from Files
+                    </Button>
+
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={handleResetOnboarding}
-                      className="flex items-center gap-2 text-orange-600 hover:text-orange-700 w-full"
+                      className="w-full flex items-center gap-2 text-orange-600 hover:text-orange-700"
                     >
                       <Trash2 className="h-4 w-4" />
                       Reset Onboarding
                     </Button>
-                  </motion.div>
+                  </TabsContent>
 
-                  <AnimatePresence>
-                    {generatedFiles.length > 0 && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="space-y-2"
-                      >
-                        <motion.div
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
+                  <TabsContent value="files" className="space-y-2 mt-3">
+                    {generatedFiles.length > 0 ? (
+                      <>
+                        <div className="text-xs text-muted-foreground">
+                          {generatedFiles.length} files generated
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleDownloadFiles}
+                          className="w-full flex items-center gap-2"
                         >
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={handleDownloadFiles}
-                            className="flex items-center gap-2 w-full"
-                          >
-                            <Download className="h-4 w-4" />
-                            Download Generated Files
-                          </Button>
-                        </motion.div>
-
-                        <motion.div
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
+                          <Download className="h-4 w-4" />
+                          Download Files
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleClearFiles}
+                          className="w-full flex items-center gap-2 text-red-600 hover:text-red-700"
                         >
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={handleClearFiles}
-                            className="flex items-center gap-2 text-red-600 hover:text-red-700 w-full"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                            Clear Generated Files
-                          </Button>
-                        </motion.div>
-                      </motion.div>
+                          <Trash2 className="h-4 w-4" />
+                          Clear Generated Files
+                        </Button>
+                      </>
+                    ) : (
+                      <div className="text-xs text-center text-muted-foreground py-4">
+                        No generated files yet.
+                        <br />
+                        Complete onboarding to generate files.
+                      </div>
                     )}
-                  </AnimatePresence>
-                </motion.div>
-
-                <motion.div
-                  initial={{ y: -10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.2 }}
-                  className="text-xs text-muted-foreground/70 pt-2 border-t"
-                >
-                  <p>
-                    💡 Edit: Resume from{" "}
-                    {savedStep !== null ? stepNames[savedStep] : "current step"}
-                  </p>
-                  <p>🔄 Reset: Start from beginning</p>
-                </motion.div>
+                  </TabsContent>
+                </Tabs>
               </CardContent>
             </motion.div>
           )}

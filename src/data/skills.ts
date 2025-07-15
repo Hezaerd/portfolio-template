@@ -1,4 +1,4 @@
-export const skills = [
+export const skills: string[] = [
   "Unity",
   "C#",
   "Unreal Engine",
@@ -7,5 +7,5 @@ export const skills = [
   "Blender",
   "Git",
   "Perforce",
-  "Excel",
+  "Excel"
 ];

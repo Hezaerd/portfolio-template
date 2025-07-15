@@ -76,6 +76,7 @@ export interface PortfolioState {
     contactConfig?: ContactConfig;
   }) => void;
   loadInitialData: () => Promise<void>;
+  reloadFromFiles: () => Promise<void>;
   setIsLoaded: (loaded: boolean) => void;
 }
 
@@ -144,6 +145,8 @@ export const usePortfolioStore = create<PortfolioState>()(
       loadInitialData: async () => {
         try {
           // Load fresh data from files to sync any manual changes
+          // Add cache busting to ensure we get the latest file contents
+          const cacheBuster = Date.now();
           const [
             personalInfoModule,
             skillsModule,
@@ -151,11 +154,11 @@ export const usePortfolioStore = create<PortfolioState>()(
             projectsModule,
             contactConfigModule,
           ] = await Promise.all([
-            import("../data/personal-info"),
-            import("../data/skills"),
-            import("../data/experience"),
-            import("../data/projects"),
-            import("../data/contact-config"),
+            import(`../data/personal-info?v=${cacheBuster}`),
+            import(`../data/skills?v=${cacheBuster}`),
+            import(`../data/experience?v=${cacheBuster}`),
+            import(`../data/projects?v=${cacheBuster}`),
+            import(`../data/contact-config?v=${cacheBuster}`),
           ]);
 
           set({
@@ -173,6 +176,11 @@ export const usePortfolioStore = create<PortfolioState>()(
           console.error("❌ Error loading portfolio data:", error);
           set({ isLoaded: true }); // Mark as loaded even on error to prevent infinite loading
         }
+      },
+
+      reloadFromFiles: async () => {
+        set({ isLoaded: false });
+        await _get().loadInitialData();
       },
     }),
     {

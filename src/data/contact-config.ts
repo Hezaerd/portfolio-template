@@ -4,6 +4,6 @@ export interface ContactConfig {
 }
 
 export const contactConfig: ContactConfig = {
-  service: "none",
-  endpoint: "",
+  "service": "none",
+  "endpoint": ""
 };

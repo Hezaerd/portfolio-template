@@ -14,6 +14,7 @@ export const usePortfolioUpdates = () => {
     setEducation,
     setProjects,
     updateAllData,
+    reloadFromFiles,
   } = usePortfolioStore();
 
   const updatePortfolioData = (data: OnboardingData) => {
@@ -42,5 +43,6 @@ export const usePortfolioUpdates = () => {
     setWorkExperience,
     setEducation,
     setProjects,
+    reloadFromFiles,
   };
 };
