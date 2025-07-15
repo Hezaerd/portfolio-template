@@ -6,7 +6,7 @@ import { PortfolioProvider } from "@/components/providers/PortfolioProvider";
 import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
 import { EditOnboarding } from "@/components/onboarding/EditOnboarding";
 import { Toaster } from "@/components/ui/sonner";
-import { personalInfo } from "@/data/personal-info";
+import { personalInfo } from "../data/personal-info";
 import "./globals.css";
 
 const geistSans = Geist({

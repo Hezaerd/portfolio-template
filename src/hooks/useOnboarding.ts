@@ -120,11 +120,11 @@ export const useOnboarding = () => {
         { projects },
         { contactConfig },
       ] = await Promise.all([
-        import("@/data/personal-info"),
-        import("@/data/skills"),
-        import("@/data/experience"),
-        import("@/data/projects"),
-        import("@/data/contact-config"),
+        import("../data/personal-info"),
+        import("../data/skills"),
+        import("../data/experience"),
+        import("../data/projects"),
+        import("../data/contact-config"),
       ]);
 
       // Pre-fill form with existing data
