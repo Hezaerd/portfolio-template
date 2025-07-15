@@ -1,10 +1,11 @@
 export const skills = [
-  "C++",
-  "C#",
   "Unity",
+  "C#",
   "Unreal Engine",
-  "OpenGL / DirectX",
-  "Game Physics",
-  "Engine Architecture",
-  "Tools Development",
+  "C++",
+  "Game Design",
+  "Blender",
+  "Git",
+  "Perforce",
+  "Excel",
 ];

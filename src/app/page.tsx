@@ -7,6 +7,7 @@ import {
   Contact,
   Footer,
 } from "@/components/sections";
+import { contactConfig } from "@/data/contact-config";
 
 export default function Home() {
   return (
@@ -16,7 +17,7 @@ export default function Home() {
       <About />
       <Projects />
       <Resume />
-      <Contact />
+      {contactConfig.service !== "none" && <Contact />}
       <Footer />
     </div>
   );

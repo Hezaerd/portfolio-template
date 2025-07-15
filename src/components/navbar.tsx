@@ -20,14 +20,23 @@ import {
 import { Menu, Home, User, Briefcase, Mail, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { contactConfig } from "@/data/contact-config";
 
-const navigationItems = [
+const baseNavigationItems = [
   { name: "Home", href: "#home", icon: Home },
   { name: "About", href: "#about", icon: User },
   { name: "Projects", href: "#projects", icon: Briefcase },
   { name: "Resume", href: "#resume", icon: FileText },
   { name: "Contact", href: "#contact", icon: Mail },
 ];
+
+// Filter navigation items based on contact config
+const navigationItems = baseNavigationItems.filter(item => {
+  if (item.name === "Contact" && contactConfig.service === "none") {
+    return false;
+  }
+  return true;
+});
 
 // Custom hook to track active section
 function useActiveSection() {
@@ -171,8 +180,8 @@ export function Navbar() {
             </a>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:block">
+          {/* Desktop Navigation - Centered */}
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2">
             <NavigationMenu>
               <NavigationMenuList
                 ref={navListRef}
@@ -213,12 +222,14 @@ export function Navbar() {
           {/* Theme Toggle and CTA Button */}
           <div className="hidden md:flex items-center gap-3">
             <ThemeToggle />
-            <Button
-              onClick={() => scrollToSection("#contact")}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground border-0 transition-all duration-300 shadow-lg hover:shadow-xl"
-            >
-              Get In Touch
-            </Button>
+            {contactConfig.service !== "none" && (
+              <Button
+                onClick={() => scrollToSection("#contact")}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground border-0 transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Get In Touch
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -275,14 +286,16 @@ export function Navbar() {
                         <ThemeToggle />
                       </div>
                     </div>
-                    <div className="px-4">
-                      <Button
-                        onClick={() => scrollToSection("#contact")}
-                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 transition-all duration-300"
-                      >
-                        Get In Touch
-                      </Button>
-                    </div>
+                    {contactConfig.service !== "none" && (
+                      <div className="px-4">
+                        <Button
+                          onClick={() => scrollToSection("#contact")}
+                          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 transition-all duration-300"
+                        >
+                          Get In Touch
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </SheetContent>

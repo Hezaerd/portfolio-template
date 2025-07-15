@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { personalInfo } from "@/data/personal-info";
 import { Github, Linkedin, Twitter, ExternalLink, Mail } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -18,7 +19,8 @@ export function Footer() {
             viewport={{ once: true }}
           >
             <p className="text-muted-foreground mb-2">
-              © {new Date().getFullYear()} Your Name. All rights reserved.
+              © {new Date().getFullYear()} {personalInfo.name}. All rights
+              reserved.
             </p>
             <p className="text-sm text-muted-foreground flex items-center justify-center md:justify-start gap-1">
               Portfolio crafted by{" "}
@@ -45,9 +47,7 @@ export function Footer() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() =>
-                window.open("https://github.com/yourusername", "_blank")
-              }
+              onClick={() => window.open(personalInfo.github, "_blank")}
               className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
             >
               <Github className="w-5 h-5" />
@@ -56,36 +56,45 @@ export function Footer() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() =>
-                window.open("https://linkedin.com/in/yourusername", "_blank")
-              }
+              onClick={() => window.open(personalInfo.linkedin, "_blank")}
               className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
             >
               <Linkedin className="w-5 h-5" />
               <span className="sr-only">LinkedIn</span>
             </Button>
+            {personalInfo.twitter && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => window.open(personalInfo.twitter!, "_blank")}
+                className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
+              >
+                <Twitter className="w-5 h-5" />
+                <span className="sr-only">Twitter</span>
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="icon"
               onClick={() =>
-                window.open("https://twitter.com/yourusername", "_blank")
-              }
-              className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
-            >
-              <Twitter className="w-5 h-5" />
-              <span className="sr-only">Twitter</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() =>
-                window.open("mailto:your.email@example.com", "_blank")
+                window.open(`mailto:${personalInfo.email}`, "_blank")
               }
               className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
             >
               <Mail className="w-5 h-5" />
               <span className="sr-only">Email</span>
             </Button>
+            {personalInfo.website && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => window.open(personalInfo.website!, "_blank")}
+                className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
+              >
+                <ExternalLink className="w-5 h-5" />
+                <span className="sr-only">Website</span>
+              </Button>
+            )}
           </motion.div>
         </div>
       </div>

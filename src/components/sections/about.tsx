@@ -1,6 +1,7 @@
 "use client";
 
 import { skills } from "@/data/skills";
+import { personalInfo } from "@/data/personal-info";
 import { User, Wrench } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -25,16 +26,13 @@ export function About() {
             viewport={{ once: true }}
           >
             <p className="text-lg text-muted-foreground mb-6">
-              I'm a passionate game and engine programmer with a strong
-              background in C++, C#, and real-time graphics. I enjoy building
-              custom engines, gameplay systems, and development tools that
-              empower creators and players alike.
+              {personalInfo.bio}
             </p>
-            <p className="text-lg text-muted-foreground">
-              My experience spans engine architecture, physics, rendering, and
-              cross-platform development. I thrive on solving complex technical
-              challenges and collaborating with multidisciplinary teams.
-            </p>
+            {personalInfo.location && (
+              <p className="text-lg text-muted-foreground">
+                📍 Based in {personalInfo.location}
+              </p>
+            )}
           </motion.div>
           <motion.div
             className="bg-primary p-1 rounded-lg"

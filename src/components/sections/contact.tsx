@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/form";
 import { Mail, Send } from "lucide-react";
 import { motion } from "motion/react";
+import { contactConfig } from "@/data/contact-config";
+import { personalInfo } from "@/data/personal-info";
 
 const contactFormSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -30,6 +32,11 @@ type ContactFormData = z.infer<typeof contactFormSchema>;
 
 export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Don't render if contact service is disabled
+  if (contactConfig.service === "none") {
+    return null;
+  }
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -50,19 +57,68 @@ export function Contact() {
     });
 
     try {
-      // Simulate form submission
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log("Form submitted:", data);
+      let success = false;
 
-      // Dismiss loading toast and show success
-      toast.dismiss(loadingToast);
-      toast.success("Message sent successfully!", {
-        description: `Thank you ${data.fullName}! I'll get back to you soon.`,
-        duration: 5000,
-      });
+      if (contactConfig.service === "formspree" && contactConfig.endpoint) {
+        // Submit to Formspree
+        const response = await fetch(contactConfig.endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: data.fullName,
+            email: data.email,
+            subject: data.subject,
+            message: data.message,
+          }),
+        });
+        success = response.ok;
+      } else if (contactConfig.service === "netlify") {
+        // Submit to Netlify Forms (would need to be handled differently in production)
+        const formData = new FormData();
+        formData.append("name", data.fullName);
+        formData.append("email", data.email);
+        formData.append("subject", data.subject);
+        formData.append("message", data.message);
+        formData.append("form-name", "contact");
 
-      // Reset form after successful submission
-      form.reset();
+        const response = await fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(formData as any).toString(),
+        });
+        success = response.ok;
+      } else if (contactConfig.service === "custom" && contactConfig.endpoint) {
+        // Submit to custom endpoint
+        const response = await fetch(contactConfig.endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        success = response.ok;
+      } else {
+        // No service configured, just simulate success
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        success = true;
+        console.log("Form submitted (no service configured):", data);
+      }
+
+      if (success) {
+        // Dismiss loading toast and show success
+        toast.dismiss(loadingToast);
+        toast.success("Message sent successfully!", {
+          description: `Thank you ${data.fullName}! I'll get back to you soon.`,
+          duration: 5000,
+        });
+
+        // Reset form after successful submission
+        form.reset();
+      } else {
+        throw new Error("Failed to submit form");
+      }
     } catch (error) {
       // Dismiss loading toast and show error
       toast.dismiss(loadingToast);
@@ -97,6 +153,12 @@ export function Contact() {
             I'm always interested in new opportunities and exciting projects.
             Feel free to reach out if you'd like to collaborate!
           </p>
+          {contactConfig.service === "none" && (
+            <p className="text-sm text-muted-foreground/70 mt-2">
+              Contact form service not configured. Messages will be logged to
+              console.
+            </p>
+          )}
         </motion.div>
 
         <motion.div

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { FolderGit2, Wrench } from "lucide-react";
 import { motion } from "motion/react";
 import { trackNavigation, trackResumeDownload } from "@/lib/analytics";
+import { personalInfo } from "@/data/personal-info";
 
 // Lightweight animation variants
 const fadeIn = {
@@ -29,23 +30,21 @@ export function Hero() {
           className="text-4xl sm:text-6xl font-bold text-foreground mb-2"
           {...fadeIn}
         >
-          Your Name
+          {personalInfo.name}
         </motion.h1>
         <motion.h2
           className="text-xl sm:text-2xl font-semibold text-primary mb-6 tracking-widest uppercase"
           {...slideUp}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
-          Game/Engine Programmer
+          {personalInfo.role}
         </motion.h2>
         <motion.p
           className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto"
           {...slideUp}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          Passionate about building high-performance game engines, tools, and
-          interactive experiences. Specialized in C++, C#, and real-time
-          graphics.
+          {personalInfo.bio}
         </motion.p>
         <motion.div
           className="flex flex-col sm:flex-row gap-4 justify-center"
