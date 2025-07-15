@@ -189,7 +189,7 @@ export const SkillsStep = () => {
       </div>
 
       <FormField
-        control={form.control}
+        control={form.control as any}
         name="skills"
         render={() => (
           <FormItem>

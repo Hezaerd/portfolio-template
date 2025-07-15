@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { FolderGit2, Wrench } from "lucide-react";
 import { motion } from "motion/react";
 import { trackNavigation, trackResumeDownload } from "@/lib/analytics";
-import { personalInfo } from "@/data/personal-info";
+import { usePersonalInfo } from "../../stores/portfolio-store";
 
 // Lightweight animation variants
 const fadeIn = {
@@ -20,6 +20,8 @@ const slideUp = {
 };
 
 export function Hero() {
+  const personalInfo = usePersonalInfo();
+
   return (
     <section
       id="home"

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { OnboardingProvider } from "@/contexts/OnboardingContext";
+import { PortfolioProvider } from "@/components/providers/PortfolioProvider";
 import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
 import { EditOnboarding } from "@/components/onboarding/EditOnboarding";
 import { Toaster } from "@/components/ui/sonner";
@@ -42,12 +43,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <OnboardingProvider>
-            {children}
-            <OnboardingModal />
-            <EditOnboarding />
-            <Toaster />
-          </OnboardingProvider>
+          <PortfolioProvider>
+            <OnboardingProvider>
+              {children}
+              <OnboardingModal />
+              <EditOnboarding />
+              <Toaster />
+            </OnboardingProvider>
+          </PortfolioProvider>
         </ThemeProvider>
       </body>
     </html>

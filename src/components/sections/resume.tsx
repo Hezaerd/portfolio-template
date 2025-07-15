@@ -1,10 +1,13 @@
 "use client";
 
-import { workExperience, education } from "@/data/experience";
 import { Briefcase, GraduationCap } from "lucide-react";
 import { motion } from "motion/react";
+import { useWorkExperience, useEducation } from "../../stores/portfolio-store";
 
 export function Resume() {
+  const workExperience = useWorkExperience();
+  const education = useEducation();
+
   return (
     <section id="resume" className="py-16 px-4 sm:px-6 lg:px-8 bg-card">
       <div className="max-w-7xl mx-auto">

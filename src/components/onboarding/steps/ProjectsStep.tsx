@@ -219,7 +219,7 @@ export const ProjectsStep = () => {
       </div>
 
       <FormField
-        control={form.control}
+        control={form.control as any}
         name="projects"
         render={() => (
           <FormItem>

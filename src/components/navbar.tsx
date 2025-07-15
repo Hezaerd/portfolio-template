@@ -20,7 +20,7 @@ import {
 import { Menu, Home, User, Briefcase, Mail, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
-import { contactConfig } from "@/data/contact-config";
+import { useContactConfig } from "../stores/portfolio-store";
 
 const baseNavigationItems = [
   { name: "Home", href: "#home", icon: Home },
@@ -29,14 +29,6 @@ const baseNavigationItems = [
   { name: "Resume", href: "#resume", icon: FileText },
   { name: "Contact", href: "#contact", icon: Mail },
 ];
-
-// Filter navigation items based on contact config
-const navigationItems = baseNavigationItems.filter(item => {
-  if (item.name === "Contact" && contactConfig.service === "none") {
-    return false;
-  }
-  return true;
-});
 
 // Custom hook to track active section
 function useActiveSection() {
@@ -80,8 +72,17 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [underlineStyle, setUnderlineStyle] = useState({ width: 0, left: 0 });
   const activeSection = useActiveSection();
+  const contactConfig = useContactConfig();
   const navItemRefs = useRef<{ [key: string]: HTMLElement | null }>({});
   const navListRef = useRef<HTMLUListElement>(null);
+
+  // Filter navigation items based on contact config
+  const navigationItems = baseNavigationItems.filter(item => {
+    if (item.name === "Contact" && contactConfig.service === "none") {
+      return false;
+    }
+    return true;
+  });
 
   useEffect(() => {
     const handleScroll = () => {

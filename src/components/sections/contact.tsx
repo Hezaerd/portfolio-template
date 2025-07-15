@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,8 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Mail, Send } from "lucide-react";
 import { motion } from "motion/react";
-import { contactConfig } from "@/data/contact-config";
-import { personalInfo } from "@/data/personal-info";
+import { useContactConfig } from "../../stores/portfolio-store";
 
 const contactFormSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -32,11 +31,7 @@ type ContactFormData = z.infer<typeof contactFormSchema>;
 
 export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Don't render if contact service is disabled
-  if (contactConfig.service === "none") {
-    return null;
-  }
+  const contactConfig = useContactConfig();
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -47,6 +42,11 @@ export function Contact() {
       message: "",
     },
   });
+
+  // Don't render if contact service is disabled
+  if (contactConfig.service === "none") {
+    return null;
+  }
 
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
@@ -153,7 +153,7 @@ export function Contact() {
             I'm always interested in new opportunities and exciting projects.
             Feel free to reach out if you'd like to collaborate!
           </p>
-          {contactConfig.service === "none" && (
+          {(contactConfig.service as any) === "none" && (
             <p className="text-sm text-muted-foreground/70 mt-2">
               Contact form service not configured. Messages will be logged to
               console.

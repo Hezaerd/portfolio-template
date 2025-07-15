@@ -35,7 +35,7 @@ export const PersonalInfoStep = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
-          control={form.control}
+          control={form.control as any}
           name="personalInfo.name"
           render={({ field }) => (
             <FormItem>
@@ -52,7 +52,7 @@ export const PersonalInfoStep = () => {
         />
 
         <FormField
-          control={form.control}
+          control={form.control as any}
           name="personalInfo.role"
           render={({ field }) => (
             <FormItem>
@@ -72,7 +72,7 @@ export const PersonalInfoStep = () => {
         />
 
         <FormField
-          control={form.control}
+          control={form.control as any}
           name="personalInfo.email"
           render={({ field }) => (
             <FormItem>
@@ -93,7 +93,7 @@ export const PersonalInfoStep = () => {
         />
 
         <FormField
-          control={form.control}
+          control={form.control as any}
           name="personalInfo.location"
           render={({ field }) => (
             <FormItem>
@@ -111,7 +111,7 @@ export const PersonalInfoStep = () => {
       </div>
 
       <FormField
-        control={form.control}
+        control={form.control as any}
         name="personalInfo.bio"
         render={({ field }) => (
           <FormItem>
@@ -133,7 +133,7 @@ export const PersonalInfoStep = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
-            control={form.control}
+            control={form.control as any}
             name="personalInfo.github"
             render={({ field }) => (
               <FormItem>
@@ -153,7 +153,7 @@ export const PersonalInfoStep = () => {
           />
 
           <FormField
-            control={form.control}
+            control={form.control as any}
             name="personalInfo.linkedin"
             render={({ field }) => (
               <FormItem>
@@ -173,7 +173,7 @@ export const PersonalInfoStep = () => {
           />
 
           <FormField
-            control={form.control}
+            control={form.control as any}
             name="personalInfo.twitter"
             render={({ field }) => (
               <FormItem>
@@ -193,7 +193,7 @@ export const PersonalInfoStep = () => {
           />
 
           <FormField
-            control={form.control}
+            control={form.control as any}
             name="personalInfo.website"
             render={({ field }) => (
               <FormItem>

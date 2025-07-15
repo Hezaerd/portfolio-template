@@ -17,6 +17,7 @@ import { ProjectsStep } from "./steps/ProjectsStep";
 import { ThemeReferenceStep } from "./steps/ThemeReferenceStep";
 import { FinalSetupStep } from "./steps/FinalSetupStep";
 import { generatePortfolioFiles } from "@/lib/fileGenerator";
+import { usePortfolioUpdates } from "../../hooks/usePortfolioUpdates";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const steps = [
@@ -40,6 +41,7 @@ export const OnboardingModal = () => {
     form,
     formState,
   } = useOnboardingContext();
+  const { updatePortfolioData } = usePortfolioUpdates();
 
   const CurrentStepComponent = steps[currentStep]?.component;
   const isLastStep = currentStep === steps.length - 1;
@@ -55,6 +57,10 @@ export const OnboardingModal = () => {
 
   const handleComplete = async () => {
     try {
+      // Update Zustand store immediately for instant UI updates
+      updatePortfolioData(onboardingData);
+
+      // Then update the files
       await generatePortfolioFiles(onboardingData);
       completeOnboarding();
     } catch (error) {

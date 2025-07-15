@@ -1,4 +1,5 @@
 import { OnboardingData } from "@/hooks/useOnboarding";
+import { usePortfolioStore } from "../stores/portfolio-store";
 
 export const generatePortfolioFiles = async (data: OnboardingData) => {
   try {
@@ -57,9 +58,19 @@ export const generatePortfolioFiles = async (data: OnboardingData) => {
 
     console.log("✅ All portfolio files updated successfully!");
 
-    // Force reload to show updated content
+    // Update Zustand store immediately for real-time updates
     if (typeof window !== "undefined") {
-      window.location.reload();
+      const { updateAllData } = usePortfolioStore.getState();
+      updateAllData({
+        personalInfo: data.personalInfo,
+        skills: data.skills,
+        workExperience: data.workExperience,
+        education: data.education,
+        projects: data.projects,
+        contactConfig: data.contactForm,
+      });
+
+      console.log("✅ Zustand store updated with new data");
     }
 
     return { success: true, message: "Portfolio updated successfully!" };

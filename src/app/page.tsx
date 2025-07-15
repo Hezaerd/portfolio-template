@@ -1,3 +1,5 @@
+"use client";
+
 import { Navbar } from "@/components/navbar";
 import {
   Hero,
@@ -7,9 +9,11 @@ import {
   Contact,
   Footer,
 } from "@/components/sections";
-import { contactConfig } from "@/data/contact-config";
+import { useContactConfig } from "../stores/portfolio-store";
 
 export default function Home() {
+  const contactConfig = useContactConfig();
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />

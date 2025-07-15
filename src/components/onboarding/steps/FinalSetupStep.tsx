@@ -26,9 +26,11 @@ import {
   Rocket,
   X,
 } from "lucide-react";
+import { usePortfolioUpdates } from "../../../hooks/usePortfolioUpdates";
 
 export const FinalSetupStep = () => {
   const { form } = useOnboardingContext();
+  const { updateContactConfig } = usePortfolioUpdates();
 
   const contactService = form.watch("contactForm.service");
   const deploymentPlatform = form.watch("deployment.platform");
@@ -40,6 +42,12 @@ export const FinalSetupStep = () => {
     if (service === "none") {
       form.setValue("contactForm.endpoint", "");
     }
+
+    // Update Zustand store immediately for real-time UI updates
+    updateContactConfig(
+      service,
+      service === "none" ? "" : form.getValues("contactForm.endpoint")
+    );
   };
 
   const handlePlatformSelect = (
@@ -90,7 +98,7 @@ export const FinalSetupStep = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <FormField
-                control={form.control}
+                control={form.control as any}
                 name="contactForm.service"
                 render={({ field }) => (
                   <FormItem>
@@ -189,7 +197,7 @@ export const FinalSetupStep = () => {
               {(contactService === "formspree" ||
                 contactService === "custom") && (
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name="contactForm.endpoint"
                   render={({ field }) => (
                     <FormItem>
@@ -206,6 +214,11 @@ export const FinalSetupStep = () => {
                               : "https://your-api.com/contact"
                           }
                           {...field}
+                          onChange={e => {
+                            field.onChange(e);
+                            // Update Zustand store immediately
+                            updateContactConfig(contactService, e.target.value);
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -254,7 +267,7 @@ export const FinalSetupStep = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <FormField
-                control={form.control}
+                control={form.control as any}
                 name="deployment.platform"
                 render={({ field }) => (
                   <FormItem>
@@ -357,7 +370,7 @@ export const FinalSetupStep = () => {
                 deploymentPlatform === "vercel" ||
                 deploymentPlatform === "netlify") && (
                 <FormField
-                  control={form.control}
+                  control={form.control as any}
                   name="deployment.customDomain"
                   render={({ field }) => (
                     <FormItem>

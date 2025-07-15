@@ -1,6 +1,5 @@
 "use client";
 
-import { projects } from "@/data/projects";
 import { ProjectModal } from "@/components/project-modal";
 import {
   FolderGit2,
@@ -16,8 +15,10 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { trackSearchUsage } from "@/lib/analytics";
+import { useProjects } from "../../stores/portfolio-store";
 
 export function Projects() {
+  const projects = useProjects();
   const [selectedProject, setSelectedProject] = useState<
     (typeof projects)[0] | null
   >(null);

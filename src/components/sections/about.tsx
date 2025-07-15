@@ -1,11 +1,13 @@
 "use client";
 
-import { skills } from "@/data/skills";
-import { personalInfo } from "@/data/personal-info";
 import { User, Wrench } from "lucide-react";
 import { motion } from "motion/react";
+import { usePersonalInfo, useSkills } from "../../stores/portfolio-store";
 
 export function About() {
+  const personalInfo = usePersonalInfo();
+  const skills = useSkills();
+
   return (
     <section id="about" className="py-16 px-4 sm:px-6 lg:px-8 bg-card">
       <div className="max-w-7xl mx-auto">

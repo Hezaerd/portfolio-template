@@ -11,7 +11,7 @@ export interface PersonalInfo {
 }
 
 export const personalInfo: PersonalInfo = {
-  name: "Your Name",
+  name: "Test Name",
   role: "Game/Engine Programmer",
   bio: "Passionate about building high-performance game engines, tools, and interactive experiences. Specialized in C++, C#, and real-time graphics.",
   email: "your.email@example.com",

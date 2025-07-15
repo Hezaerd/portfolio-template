@@ -84,7 +84,7 @@ export const useOnboarding = () => {
 
   // Main form using React Hook Form + Zod
   const form = useForm<OnboardingData>({
-    resolver: zodResolver(onboardingSchema),
+    resolver: zodResolver(onboardingSchema) as any,
     defaultValues: defaultOnboardingData,
     mode: "onChange", // Real-time validation
   });
