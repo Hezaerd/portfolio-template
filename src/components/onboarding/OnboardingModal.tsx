@@ -48,6 +48,7 @@ export const OnboardingModal = () => {
   const { updatePortfolioData } = usePortfolioUpdates();
   const [hoveredStep, setHoveredStep] = useState<number | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [direction, setDirection] = useState(0); // 1 for forward, -1 for backward
   const dotsContainerRef = useRef<HTMLDivElement>(null);
 
   const CurrentStepComponent = steps[currentStep]?.component;
@@ -55,6 +56,7 @@ export const OnboardingModal = () => {
   const isFirstStep = currentStep === 0;
 
   const handleNext = async () => {
+    setDirection(1); // Moving forward
     if (isLastStep) {
       await handleComplete();
     } else {
@@ -64,6 +66,7 @@ export const OnboardingModal = () => {
 
   const handleStepClick = (stepIndex: number) => {
     if (stepIndex !== currentStep) {
+      setDirection(stepIndex > currentStep ? 1 : -1); // Set direction based on target step
       setCurrentStep(stepIndex);
       toast.info(`Jumped to ${steps[stepIndex].title}`, {
         description: "You can navigate back to continue where you left off.",
@@ -187,15 +190,35 @@ export const OnboardingModal = () => {
 
         <Form {...form}>
           <form className="space-y-6">
-            <div className="py-6">
-              {CurrentStepComponent && <CurrentStepComponent />}
+            <div className="py-6 relative overflow-hidden">
+              <AnimatePresence mode="wait">
+                {CurrentStepComponent && (
+                  <motion.div
+                    key={currentStep}
+                    initial={{ opacity: 0, x: direction * 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: direction * -20 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 25,
+                      duration: 0.15,
+                    }}
+                  >
+                    <CurrentStepComponent />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             <div className="flex items-center justify-between">
               <Button
                 type="button"
                 variant="outline"
-                onClick={prevStep}
+                onClick={() => {
+                  setDirection(-1); // Moving backward
+                  prevStep();
+                }}
                 disabled={isFirstStep}
                 className="flex items-center gap-2"
               >
