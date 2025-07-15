@@ -68,9 +68,17 @@ export const OnboardingModal = () => {
     if (stepIndex !== currentStep) {
       setDirection(stepIndex > currentStep ? 1 : -1); // Set direction based on target step
       setCurrentStep(stepIndex);
-      toast.info(`Jumped to ${steps[stepIndex].title}`, {
-        description: "You can navigate back to continue where you left off.",
-      });
+
+      // Only show toast if user hasn't seen it before
+      const hasSeenStepJumpToast = localStorage.getItem(
+        "onboarding-step-jump-toast-seen"
+      );
+      if (!hasSeenStepJumpToast) {
+        toast.info(`Jumped to ${steps[stepIndex].title}`, {
+          description: "You can navigate back to continue where you left off.",
+        });
+        localStorage.setItem("onboarding-step-jump-toast-seen", "true");
+      }
     }
   };
 
