@@ -11,13 +11,13 @@ export interface PersonalInfo {
 }
 
 export const personalInfo: PersonalInfo = {
-  name: "Joseph",
-  role: "Game/Engine Programmer",
-  bio: "Passionate about building high-performance game engines, tools, and interactive experiences. Specialized in C++, C#, and real-time graphics.",
-  email: "your.email@example.com",
-  location: "",
-  github: "https://github.com/yourusername",
-  linkedin: "https://linkedin.com/in/yourusername",
-  twitter: "",
-  website: "",
+  "name": "Joseph",
+  "role": "Game/Engine Programmer",
+  "bio": "Passionate about building high-performance game engines, tools, and interactive experiences. Specialized in C++, C#, and real-time graphics.",
+  "email": "your.email@example.com",
+  "location": "Paris, FR",
+  "github": "https://github.com/yourusername",
+  "linkedin": "https://linkedin.com/in/yourusername",
+  "twitter": "",
+  "website": ""
 };

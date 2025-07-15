@@ -20,6 +20,8 @@ import { generatePortfolioFiles } from "@/lib/fileGenerator";
 import { usePortfolioUpdates } from "../../hooks/usePortfolioUpdates";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const steps = [
   { title: "Personal Information", component: PersonalInfoStep },
@@ -41,8 +43,12 @@ export const OnboardingModal = () => {
     completeOnboarding,
     form,
     formState,
+    setCurrentStep,
   } = useOnboardingContext();
   const { updatePortfolioData } = usePortfolioUpdates();
+  const [hoveredStep, setHoveredStep] = useState<number | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const dotsContainerRef = useRef<HTMLDivElement>(null);
 
   const CurrentStepComponent = steps[currentStep]?.component;
   const isLastStep = currentStep === steps.length - 1;
@@ -56,7 +62,52 @@ export const OnboardingModal = () => {
     }
   };
 
-    const handleSaveProgress = async () => {
+  const handleStepClick = (stepIndex: number) => {
+    if (stepIndex !== currentStep) {
+      setCurrentStep(stepIndex);
+      toast.info(`Jumped to ${steps[stepIndex].title}`, {
+        description: "You can navigate back to continue where you left off.",
+      });
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent, index: number) => {
+    if (dotsContainerRef.current) {
+      const containerRect = dotsContainerRef.current.getBoundingClientRect();
+      const relativeX = e.clientX - containerRect.left;
+      const relativeY = e.clientY - containerRect.top;
+      setMousePosition({ x: relativeX, y: relativeY });
+    }
+  };
+
+  const getDotOffset = (index: number) => {
+    if (hoveredStep === null) return { x: 0, y: 0 };
+
+    if (index === hoveredStep) {
+      // Hovered dot follows cursor by 1-2px
+      const dotCenterX = index * 20 + 6; // 20px gap + 6px center offset
+      const dotCenterY = 6; // 6px center offset
+      const offsetX = Math.max(
+        -2,
+        Math.min(2, (mousePosition.x - dotCenterX) * 0.1)
+      );
+      const offsetY = Math.max(
+        -2,
+        Math.min(2, (mousePosition.y - dotCenterY) * 0.1)
+      );
+      return { x: offsetX, y: offsetY };
+    } else {
+      // Other dots move away with fluid effect
+      const distance = Math.abs(index - hoveredStep);
+      const direction = index < hoveredStep ? -1 : 1;
+      const influence = Math.max(0, 1 - distance * 0.5);
+      const offsetX = direction * influence * 3;
+      const offsetY = influence * Math.sin(Date.now() * 0.002 + index) * 0.5;
+      return { x: offsetX, y: offsetY };
+    }
+  };
+
+  const handleSaveProgress = async () => {
     try {
       // Update Zustand store immediately for instant UI updates
       updatePortfolioData(onboardingData);
@@ -84,7 +135,8 @@ export const OnboardingModal = () => {
     completeOnboarding();
 
     toast.success("Onboarding completed!", {
-      description: "Your portfolio setup is now complete. Remember to save any final changes.",
+      description:
+        "Your portfolio setup is now complete. Remember to save any final changes.",
     });
   };
 
@@ -152,15 +204,68 @@ export const OnboardingModal = () => {
               </Button>
 
               <div className="flex flex-col items-center gap-2">
-                <div className="flex gap-2">
-                  {steps.map((_, index) => (
-                    <div
-                      key={index}
-                      className={`w-2 h-2 rounded-full ${
-                        index <= currentStep ? "bg-primary" : "bg-muted"
-                      }`}
-                    />
-                  ))}
+                <div
+                  ref={dotsContainerRef}
+                  className="flex gap-2 relative py-2"
+                  style={{ minHeight: "24px" }}
+                >
+                  {steps.map((step, index) => {
+                    const offset = getDotOffset(index);
+                    return (
+                      <div key={index} className="relative">
+                        <motion.button
+                          type="button"
+                          onClick={() => handleStepClick(index)}
+                          onMouseEnter={() => setHoveredStep(index)}
+                          onMouseLeave={() => setHoveredStep(null)}
+                          onMouseMove={e => handleMouseMove(e, index)}
+                          className={`w-3 h-3 rounded-full cursor-pointer ${
+                            index <= currentStep ? "bg-primary" : "bg-muted"
+                          }`}
+                          aria-label={`Go to ${step.title}`}
+                          initial={{ scale: 1, x: 0, y: 0 }}
+                          animate={{
+                            scale: hoveredStep === index ? 1.5 : 1,
+                            x: offset.x,
+                            y: offset.y,
+                          }}
+                          whileHover={{
+                            scale: 1.5,
+                          }}
+                          whileTap={{
+                            scale: 1.2,
+                          }}
+                          transition={{
+                            type: "spring",
+                            stiffness: hoveredStep === index ? 400 : 200,
+                            damping: hoveredStep === index ? 25 : 15,
+                            mass: 0.5,
+                          }}
+                        />
+
+                        {/* Hover preview label */}
+                        <AnimatePresence>
+                          {hoveredStep === index && (
+                            <motion.div
+                              className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 px-2 py-1 bg-popover text-popover-foreground text-xs rounded-md shadow-md border whitespace-nowrap z-10"
+                              initial={{ opacity: 0, y: 5, scale: 0.8 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              exit={{ opacity: 0, y: 5, scale: 0.8 }}
+                              transition={{
+                                type: "spring",
+                                stiffness: 400,
+                                damping: 25,
+                                duration: 0.15,
+                              }}
+                            >
+                              {step.title}
+                              <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-border"></div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <Button
