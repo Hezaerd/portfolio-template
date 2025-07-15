@@ -13,7 +13,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Plus, X, Code, Zap } from "lucide-react";
+import { Plus, X, Code, Zap, Trash2 } from "lucide-react";
 
 const skillSuggestions = [
   // Programming Languages
@@ -175,6 +175,10 @@ export const SkillsStep = () => {
     form.setValue("skills", [...currentSkills, ...newSkills]);
   };
 
+  const clearAllSkills = () => {
+    form.setValue("skills", []);
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
@@ -253,6 +257,18 @@ export const SkillsStep = () => {
                     <Code className="h-4 w-4" />
                     Add Game Dev Skills
                   </Button>
+                  {skills.length > 0 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={clearAllSkills}
+                      className="flex items-center gap-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Clear All Tags
+                    </Button>
+                  )}
                 </div>
 
                 {skills.length > 0 && (
