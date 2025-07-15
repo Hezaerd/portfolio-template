@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { FolderGit2, Wrench } from "lucide-react";
 import { motion } from "motion/react";
+import { trackNavigation, trackResumeDownload } from "@/lib/analytics";
 
 // Lightweight animation variants
 const fadeIn = {
@@ -56,6 +57,7 @@ export function Hero() {
             size="lg"
             className="hover:bg-primary/70 hover:shadow-lg transition-all duration-200"
             onClick={() => {
+              trackNavigation("projects");
               document.getElementById("projects")?.scrollIntoView({
                 behavior: "smooth",
               });
@@ -64,7 +66,15 @@ export function Hero() {
             <FolderGit2 className="w-5 h-5" />
             View Portfolio
           </Button>
-          <Button variant="outline" size="lg">
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={() => {
+              trackResumeDownload();
+              // Add your resume download logic here
+              console.log("Resume download clicked");
+            }}
+          >
             <Wrench className="w-5 h-5" />
             Download Resume
           </Button>

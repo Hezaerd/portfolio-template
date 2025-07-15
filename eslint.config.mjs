@@ -45,7 +45,7 @@ const eslintConfig = [
       // General rules
       "prefer-const": "error",
       "no-var": "error",
-      "no-console": "warn",
+      "no-console": "off",
       "no-debugger": "error",
       "no-alert": "warn",
       "no-eval": "error",

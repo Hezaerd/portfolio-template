@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { GoogleAnalytics } from "@next/third-parties/google";
+import { analyticsConfig } from "@/lib/settings";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -86,6 +88,9 @@ export default function RootLayout({
           <main>{children}</main>
           <Toaster />
         </ThemeProvider>
+        {analyticsConfig.enabled && (
+          <GoogleAnalytics gaId={analyticsConfig.gaId} />
+        )}
       </body>
     </html>
   );

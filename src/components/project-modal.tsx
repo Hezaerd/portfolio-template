@@ -19,6 +19,8 @@ import {
   AlertTriangle,
   Wrench,
 } from "lucide-react";
+import { useEffect } from "react";
+import { trackProjectModalOpen, trackProjectLink } from "@/lib/analytics";
 
 interface ProjectModalProps {
   project: Project;
@@ -27,6 +29,28 @@ interface ProjectModalProps {
 }
 
 export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
+  // Track modal opening
+  useEffect(() => {
+    if (isOpen) {
+      trackProjectModalOpen(project.title);
+    }
+  }, [isOpen, project.title]);
+
+  // Handler for GitHub link
+  const handleGithubClick = () => {
+    trackProjectLink(project.title, "github");
+    if (project.githubUrl) {
+      window.open(project.githubUrl, "_blank");
+    }
+  };
+
+  // Handler for live demo link
+  const handleLiveClick = () => {
+    trackProjectLink(project.title, "live");
+    if (project.liveUrl) {
+      window.open(project.liveUrl, "_blank");
+    }
+  };
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -86,7 +110,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                   variant="outline"
                   size="sm"
                   className="flex items-center gap-2"
-                  onClick={() => window.open(project.githubUrl, "_blank")}
+                  onClick={handleGithubClick}
                 >
                   <Github className="w-4 h-4" />
                   View Code
@@ -96,7 +120,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                 <Button
                   size="sm"
                   className="flex items-center gap-2"
-                  onClick={() => window.open(project.liveUrl, "_blank")}
+                  onClick={handleLiveClick}
                 >
                   <ExternalLink className="w-4 h-4" />
                   Live Demo

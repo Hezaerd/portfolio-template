@@ -15,6 +15,7 @@ import { motion } from "motion/react";
 import { useState, useCallback, useEffect, useRef } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
+import { trackSearchUsage } from "@/lib/analytics";
 
 export function Projects() {
   const [selectedProject, setSelectedProject] = useState<
@@ -115,7 +116,14 @@ export function Projects() {
               type="text"
               placeholder="Search projects by name, description, or tag..."
               value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={e => {
+                const value = e.target.value;
+                setSearchTerm(value);
+                // Track search usage with debouncing
+                if (value.length > 2) {
+                  trackSearchUsage(value);
+                }
+              }}
               className="w-full pl-10 pr-16 py-3 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-card-foreground placeholder-muted-foreground"
               ref={searchInputRef}
             />
