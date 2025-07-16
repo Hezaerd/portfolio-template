@@ -16,11 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-
-interface GitHubStepProps {
-  onNext: () => void;
-  onSkip: () => void;
-}
+import { useOnboardingContext } from "@/contexts/OnboardingContext";
 
 const steps = [
   {
@@ -57,7 +53,8 @@ const steps = [
   },
 ];
 
-export function GitHubStep({ onNext, onSkip }: GitHubStepProps) {
+export function GitHubStep() {
+  const { nextStep } = useOnboardingContext();
   const [token, setToken] = useState("");
   const [showToken, setShowToken] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
@@ -83,7 +80,7 @@ export function GitHubStep({ onNext, onSkip }: GitHubStepProps) {
       } else {
         setIsValid(false);
       }
-    } catch (error) {
+    } catch (_error) {
       setIsValid(false);
     } finally {
       setIsValidating(false);
@@ -126,7 +123,7 @@ export function GitHubStep({ onNext, onSkip }: GitHubStepProps) {
 
       if (data.success) {
         toast.success("GitHub token saved successfully!");
-        onNext();
+        nextStep();
       } else {
         toast.error(data.error || "Failed to save GitHub token");
       }
@@ -149,7 +146,7 @@ export function GitHubStep({ onNext, onSkip }: GitHubStepProps) {
     } catch (error) {
       console.error("Error updating environment:", error);
     }
-    onSkip();
+    nextStep();
   };
 
   return (
@@ -240,7 +237,15 @@ export function GitHubStep({ onNext, onSkip }: GitHubStepProps) {
                           size="sm"
                           variant="outline"
                           className="h-7 px-3 text-xs"
-                          onClick={() => window.open(step.link, "_blank")}
+                          onClick={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.open(
+                              step.link,
+                              "_blank",
+                              "noopener,noreferrer"
+                            );
+                          }}
                         >
                           <ExternalLink className="w-3 h-3 mr-1" />
                           Open Page

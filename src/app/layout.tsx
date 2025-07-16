@@ -59,7 +59,9 @@ export default function RootLayout({
             </OnboardingProvider>
           </PortfolioProvider>
         </ThemeProvider>
-        <GoogleAnalytics gaId={analyticsConfig.gaId} />
+        {analyticsConfig.gaId && (
+          <GoogleAnalytics gaId={analyticsConfig.gaId} />
+        )}
       </body>
     </html>
   );

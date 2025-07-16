@@ -3,10 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Palette, ExternalLink, Check, ArrowRight } from "lucide-react";
+import { useOnboardingContext } from "@/contexts/OnboardingContext";
 
 export const ThemeReferenceStep = () => {
-  const handleOpenTweakCn = () => {
-    window.open("https://tweakcn.com/", "_blank");
+  const { nextStep } = useOnboardingContext();
+  const handleOpenTweakCn = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    window.open("https://tweakcn.com/", "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -41,7 +45,7 @@ export const ThemeReferenceStep = () => {
                   <ExternalLink className="h-4 w-4" />
                   Open TweakCN
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={nextStep}>
                   <ArrowRight className="h-4 w-4" />
                   Skip for Now
                 </Button>

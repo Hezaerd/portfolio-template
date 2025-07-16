@@ -327,12 +327,15 @@ export const ResumeUploadStep = () => {
                                 type="button"
                                 variant="outline"
                                 size="sm"
-                                onClick={() =>
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
                                   window.open(
                                     `/${resumeFile.fileName}`,
-                                    "_blank"
-                                  )
-                                }
+                                    "_blank",
+                                    "noopener,noreferrer"
+                                  );
+                                }}
                                 className="border-green-300 dark:border-green-700"
                               >
                                 <Download className="h-4 w-4" />

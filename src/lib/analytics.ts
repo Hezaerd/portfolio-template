@@ -18,7 +18,8 @@ const isAnalyticsAvailable = () => {
   return (
     typeof window !== "undefined" &&
     typeof window.gtag === "function" &&
-    analyticsConfig.enabled
+    analyticsConfig.enabled &&
+    analyticsConfig.gaId // Ensure gaId exists
   );
 };
 
@@ -94,7 +95,7 @@ export const trackPageView = (path: string, title?: string) => {
     return;
   }
 
-  window.gtag!("config", analyticsConfig.gaId, {
+  window.gtag!("config", analyticsConfig.gaId!, {
     page_path: path,
     page_title: title,
   });

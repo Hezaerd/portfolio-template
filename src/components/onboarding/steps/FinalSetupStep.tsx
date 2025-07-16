@@ -59,8 +59,10 @@ export const FinalSetupStep = () => {
     }
   };
 
-  const openLink = (url: string) => {
-    window.open(url, "_blank");
+  const openLink = (url: string, e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -174,8 +176,7 @@ export const FinalSetupStep = () => {
                                     variant="ghost"
                                     size="sm"
                                     onClick={e => {
-                                      e.stopPropagation();
-                                      openLink(service.link);
+                                      openLink(service.link, e);
                                     }}
                                     className="h-auto p-0 text-xs"
                                   >
@@ -346,8 +347,7 @@ export const FinalSetupStep = () => {
                                     variant="ghost"
                                     size="sm"
                                     onClick={e => {
-                                      e.stopPropagation();
-                                      openLink(platform.link);
+                                      openLink(platform.link, e);
                                     }}
                                     className="h-auto p-0 text-xs"
                                   >

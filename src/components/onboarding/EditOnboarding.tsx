@@ -3,87 +3,207 @@
 import { useOnboardingContext } from "@/contexts/OnboardingContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
   Edit3,
-  Download,
   Trash2,
   ChevronUp,
   ChevronDown,
   Settings,
-  Info,
-  FileText,
+  GripVertical,
 } from "lucide-react";
-import { createDownloadLinks } from "@/lib/fileGenerator";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+type Corner = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+
+interface Position {
+  x: number;
+  y: number;
+  corner: Corner;
+}
+
 export const EditOnboarding = () => {
-  const {
-    isCompleted,
-    resetOnboarding,
-    onboardingData,
-    isDataCustomized,
-    setIsOnboardingOpen,
-    currentStep,
-    setCurrentStep,
-  } = useOnboardingContext();
-  const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
-  const [savedStep, setSavedStep] = useState<number | null>(null);
+  const { resetOnboarding, setIsOnboardingOpen, currentStep } =
+    useOnboardingContext();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [position, setPosition] = useState<Position>({
+    x: 16,
+    y: 16,
+    corner: "bottom-right",
+  });
+  const [tempPosition, setTempPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const cardRef = useRef<HTMLDivElement>(null);
   const isDev = process.env.NODE_ENV === "development";
 
-  const stepNames = [
-    "Personal Info",
-    "Resume Upload",
-    "Skills",
-    "Experience",
-    "Projects",
-    "Form Setup",
-    "Theme & Colors",
-  ];
-
+  // Load saved position from localStorage
   useEffect(() => {
     if (isDev) {
-      const files = localStorage.getItem("portfolio-generated-files");
-      if (files) {
-        setGeneratedFiles(JSON.parse(files));
-      }
+      const savedPosition = localStorage.getItem("dev-tools-position");
+      const collapsedState = localStorage.getItem("dev-tools-collapsed");
 
-      const savedStepStr = localStorage.getItem("onboarding-last-step");
-      if (savedStepStr) {
-        const stepNum = parseInt(savedStepStr, 10);
-        if (stepNum >= 0 && stepNum < stepNames.length) {
-          setSavedStep(stepNum);
+      if (savedPosition) {
+        try {
+          const parsedPosition = JSON.parse(savedPosition);
+          setPosition(parsedPosition);
+        } catch (error) {
+          console.error("Failed to parse saved position:", error);
         }
       }
 
-      const collapsedState = localStorage.getItem("dev-tools-collapsed");
       if (collapsedState === "true") {
         setIsCollapsed(true);
       }
     }
-  }, [isDev, stepNames.length]);
+  }, [isDev]);
 
+  // Save position and collapsed state to localStorage
   useEffect(() => {
     if (isDev) {
+      localStorage.setItem("dev-tools-position", JSON.stringify(position));
       localStorage.setItem("dev-tools-collapsed", isCollapsed.toString());
     }
-  }, [isCollapsed, isDev]);
+  }, [position, isCollapsed, isDev]);
 
-  const handleDownloadFiles = () => {
-    if (generatedFiles.length > 0) {
-      const links = createDownloadLinks(generatedFiles);
-      links.forEach(link => link.download());
+  // Calculate position based on corner and offset
+  const getAbsolutePosition = useCallback(
+    (pos: Position) => {
+      if (typeof window === "undefined") return { x: 16, y: 16 };
+
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+
+      // Get actual dimensions from the element if available, otherwise use approximations
+      const cardWidth = cardRef.current?.offsetWidth || 320;
+      const cardHeight = cardRef.current?.offsetHeight || (isCollapsed ? 80 : 240);
+
+      switch (pos.corner) {
+        case "top-left":
+          return { x: pos.x, y: pos.y };
+        case "top-right":
+          return { x: windowWidth - cardWidth - pos.x, y: pos.y };
+        case "bottom-left":
+          return { x: pos.x, y: windowHeight - cardHeight - pos.y };
+        case "bottom-right":
+          return {
+            x: windowWidth - cardWidth - pos.x,
+            y: windowHeight - cardHeight - pos.y,
+          };
+        default:
+          return { x: pos.x, y: pos.y };
+      }
+    },
+    [isCollapsed]
+  );
+
+  // Find which corner is closest to given coordinates
+  const findClosestCorner = useCallback(
+    (x: number, y: number): Corner => {
+      if (typeof window === "undefined") return "bottom-right";
+
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+
+      // Get actual dimensions from the element if available, otherwise use approximations
+      const cardWidth = cardRef.current?.offsetWidth || 320;
+      const cardHeight = cardRef.current?.offsetHeight || (isCollapsed ? 80 : 240);
+
+      // Calculate distances to each corner
+      const corners = [
+        { corner: "top-left" as Corner, distance: Math.sqrt(x * x + y * y) },
+        {
+          corner: "top-right" as Corner,
+          distance: Math.sqrt((windowWidth - x - cardWidth) ** 2 + y * y),
+        },
+        {
+          corner: "bottom-left" as Corner,
+          distance: Math.sqrt(x * x + (windowHeight - y - cardHeight) ** 2),
+        },
+        {
+          corner: "bottom-right" as Corner,
+          distance: Math.sqrt(
+            (windowWidth - x - cardWidth) ** 2 +
+              (windowHeight - y - cardHeight) ** 2
+          ),
+        },
+      ];
+
+      // Find closest corner
+      const closest = corners.reduce((prev, current) =>
+        current.distance < prev.distance ? current : prev
+      );
+
+      return closest.corner;
+    },
+    [isCollapsed]
+  );
+
+  // Animate to closest corner
+  const slideToCorner = useCallback(
+    (dragX: number, dragY: number) => {
+      const closestCorner = findClosestCorner(dragX, dragY);
+      setIsAnimating(true);
+      setTempPosition(null);
+      setPosition({ x: 16, y: 16, corner: closestCorner });
+
+      // Reset animation state after animation completes
+      setTimeout(() => {
+        setIsAnimating(false);
+      }, 300);
+    },
+    [findClosestCorner]
+  );
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (!cardRef.current) return;
+
+    const rect = cardRef.current.getBoundingClientRect();
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+    setIsDragging(true);
+    e.preventDefault();
+  }, []);
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!isDragging) return;
+
+      const newX = e.clientX - dragOffset.x;
+      const newY = e.clientY - dragOffset.y;
+
+      // Update temporary position during drag
+      setTempPosition({ x: newX, y: newY });
+    },
+    [isDragging, dragOffset]
+  );
+
+  const handleMouseUp = useCallback(() => {
+    if (isDragging && tempPosition) {
+      // Slide to closest corner when drag ends
+      slideToCorner(tempPosition.x, tempPosition.y);
     }
-  };
+    setIsDragging(false);
+  }, [isDragging, tempPosition, slideToCorner]);
 
-  const handleClearFiles = () => {
-    localStorage.removeItem("portfolio-generated-files");
-    localStorage.removeItem("portfolio-personal-info");
-    setGeneratedFiles([]);
-  };
+  // Add global mouse event listeners
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+      return () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+      };
+    }
+  }, [isDragging, handleMouseMove, handleMouseUp]);
 
   const handleEditOnboarding = () => {
     localStorage.setItem("onboarding-last-step", currentStep.toString());
@@ -95,8 +215,6 @@ export const EditOnboarding = () => {
     resetOnboarding();
   };
 
-
-
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
@@ -105,36 +223,42 @@ export const EditOnboarding = () => {
     return null;
   }
 
-  // Quick status indicators
-  const statusData = {
-    onboardingComplete: isCompleted,
-    dataCustomized: isDataCustomized(onboardingData),
-    personalInfoSet:
-      onboardingData.personalInfo.name !== "Your Name" &&
-      onboardingData.personalInfo.name !== "",
-    skillsCount: onboardingData.skills.length,
-    projectsCount: onboardingData.projects.length,
-    contactService: onboardingData.contactForm.service,
-  };
+  // Use temporary position during drag, otherwise use saved position
+  const currentPosition = tempPosition || getAbsolutePosition(position);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="fixed bottom-4 right-4 z-50"
+      ref={cardRef}
+      className="fixed z-50 select-none"
+      style={{
+        left: 0,
+        top: 0,
+        cursor: isDragging ? "grabbing" : "grab",
+      }}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+        x: currentPosition.x,
+        y: currentPosition.y,
+      }}
+      transition={{
+        duration: isDragging ? 0 : isAnimating ? 0.3 : 0.3,
+        type: isAnimating ? "spring" : "tween",
+        damping: 25,
+        stiffness: 200,
+      }}
     >
-      <Card className="w-80 shadow-lg border-2 border-red-200 dark:border-red-800">
-        <CardHeader className="py-3">
+      <Card className="w-80 shadow-lg border-2 border-red-200 dark:border-red-800 bg-background/95 backdrop-blur">
+        <CardHeader
+          className="py-3 cursor-grab active:cursor-grabbing"
+          onMouseDown={handleMouseDown}
+        >
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <GripVertical className="h-4 w-4 text-muted-foreground" />
               <Settings className="h-4 w-4" />
               <span className="leading-none">Dev Tools</span>
-              <Badge
-                variant="secondary"
-                className="text-xs leading-none px-2 py-0.5"
-              >
-                Development
-              </Badge>
             </CardTitle>
             <Button
               variant="ghost"
@@ -160,162 +284,26 @@ export const EditOnboarding = () => {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               style={{ overflow: "hidden" }}
             >
-              <CardContent className="pt-0">
-                <Tabs defaultValue="overview" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="overview" className="text-xs">
-                      <Info className="h-3 w-3 mr-1" />
-                      Status
-                    </TabsTrigger>
-                    <TabsTrigger value="actions" className="text-xs">
-                      <Settings className="h-3 w-3 mr-1" />
-                      Actions
-                    </TabsTrigger>
-                    <TabsTrigger value="files" className="text-xs">
-                      <FileText className="h-3 w-3 mr-1" />
-                      Files
-                    </TabsTrigger>
-                  </TabsList>
+              <CardContent className="pt-0 space-y-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleEditOnboarding}
+                  className="w-full flex items-center gap-2"
+                >
+                  <Edit3 className="h-4 w-4" />
+                  Edit Onboarding
+                </Button>
 
-                  <TabsContent value="overview" className="space-y-3 mt-3">
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="flex items-center justify-between">
-                        <span>Onboarding:</span>
-                        <Badge
-                          variant={
-                            statusData.onboardingComplete
-                              ? "default"
-                              : "secondary"
-                          }
-                          className="text-xs"
-                        >
-                          {statusData.onboardingComplete ? "Done" : "Pending"}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>Data:</span>
-                        <Badge
-                          variant={
-                            statusData.dataCustomized ? "default" : "secondary"
-                          }
-                          className="text-xs"
-                        >
-                          {statusData.dataCustomized ? "Custom" : "Default"}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>Personal:</span>
-                        <Badge
-                          variant={
-                            statusData.personalInfoSet ? "default" : "secondary"
-                          }
-                          className="text-xs"
-                        >
-                          {statusData.personalInfoSet ? "Set" : "Default"}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>Contact:</span>
-                        <Badge
-                          variant={
-                            statusData.contactService !== "none"
-                              ? "default"
-                              : "secondary"
-                          }
-                          className="text-xs"
-                        >
-                          {statusData.contactService}
-                        </Badge>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-2 text-xs text-center">
-                      <div>
-                        <div className="font-medium">
-                          {statusData.skillsCount}
-                        </div>
-                        <div className="text-muted-foreground">Skills</div>
-                      </div>
-                      <div>
-                        <div className="font-medium">
-                          {statusData.projectsCount}
-                        </div>
-                        <div className="text-muted-foreground">Projects</div>
-                      </div>
-                      <div>
-                        <div className="font-medium">{currentStep + 1}/6</div>
-                        <div className="text-muted-foreground">Step</div>
-                      </div>
-                    </div>
-
-                    {savedStep !== null && (
-                      <div className="text-xs text-center p-2 bg-muted rounded">
-                        <span className="text-muted-foreground">
-                          Saved at:{" "}
-                        </span>
-                        <span className="font-medium">
-                          {stepNames[savedStep]}
-                        </span>
-                      </div>
-                    )}
-                  </TabsContent>
-
-                  <TabsContent value="actions" className="space-y-2 mt-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleEditOnboarding}
-                      className="w-full flex items-center gap-2"
-                    >
-                      <Edit3 className="h-4 w-4" />
-                      Edit Onboarding
-                    </Button>
-
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleResetOnboarding}
-                      className="w-full flex items-center gap-2 text-orange-600 hover:text-orange-700"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      Reset Onboarding
-                    </Button>
-                  </TabsContent>
-
-                  <TabsContent value="files" className="space-y-2 mt-3">
-                    {generatedFiles.length > 0 ? (
-                      <>
-                        <div className="text-xs text-muted-foreground">
-                          {generatedFiles.length} files generated
-                        </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={handleDownloadFiles}
-                          className="w-full flex items-center gap-2"
-                        >
-                          <Download className="h-4 w-4" />
-                          Download Files
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={handleClearFiles}
-                          className="w-full flex items-center gap-2 text-red-600 hover:text-red-700"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          Clear Generated Files
-                        </Button>
-                      </>
-                    ) : (
-                      <div className="text-xs text-center text-muted-foreground py-4">
-                        No generated files yet.
-                        <br />
-                        Complete onboarding to generate files.
-                      </div>
-                    )}
-                  </TabsContent>
-                </Tabs>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleResetOnboarding}
+                  className="w-full flex items-center gap-2 text-orange-600 hover:text-orange-700"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Reset Onboarding
+                </Button>
               </CardContent>
             </motion.div>
           )}
