@@ -219,8 +219,8 @@ export const useOnboarding = () => {
       ["skills"], // Step 1
       ["workExperience", "education"], // Step 2
       ["projects"], // Step 3
-      [], // Step 4 - Theme step (no validation needed)
-      ["contactForm", "deployment"], // Step 5
+      ["contactForm", "deployment"], // Step 4 - Form Setup
+      [], // Step 5 - Theme step (no validation needed)
     ];
 
     const fieldsToValidate = stepFields[currentStep] || [];

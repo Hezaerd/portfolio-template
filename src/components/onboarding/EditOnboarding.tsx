@@ -43,8 +43,8 @@ export const EditOnboarding = () => {
     "Skills",
     "Experience",
     "Projects",
+    "Form Setup",
     "Theme & Colors",
-    "Final Setup",
   ];
 
   useEffect(() => {

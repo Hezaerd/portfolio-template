@@ -29,8 +29,8 @@ const steps = [
   { title: "Skills", component: SkillsStep },
   { title: "Experience", component: ExperienceStep },
   { title: "Projects", component: ProjectsStep },
+  { title: "Form Setup", component: FinalSetupStep },
   { title: "Theme & Colors", component: ThemeReferenceStep },
-  { title: "Final Setup", component: FinalSetupStep },
 ];
 
 export const OnboardingModal = () => {
@@ -186,8 +186,8 @@ export const OnboardingModal = () => {
       ["skills"], // Step 1
       ["workExperience", "education"], // Step 2
       ["projects"], // Step 3
-      [], // Step 4 - Theme step
-      ["contactForm", "deployment"], // Step 5
+      ["contactForm", "deployment"], // Step 4 - Form Setup
+      [], // Step 5 - Theme step
     ];
 
     const fieldNames = stepFieldMaps[currentStep] || [];
