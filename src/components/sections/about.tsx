@@ -2,6 +2,7 @@
 
 import { User, Wrench } from "lucide-react";
 import { motion } from "motion/react";
+import { trackSkillHover } from "@/lib/analytics";
 import { usePersonalInfo, useSkills } from "../../stores/portfolio-store";
 
 export function About() {
@@ -58,7 +59,8 @@ export function About() {
                 {skills.map(skill => (
                   <div
                     key={skill}
-                    className="text-muted-foreground flex items-center gap-2"
+                    className="text-muted-foreground flex items-center gap-2 cursor-pointer hover:text-foreground transition-colors duration-200"
+                    onMouseEnter={() => trackSkillHover(skill)}
                   >
                     <span className="w-2 h-2 rounded-full bg-primary inline-block" />
                     {skill}

@@ -20,6 +20,7 @@ import {
 import { Menu, Home, User, Briefcase, Mail, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { trackNavigation } from "@/lib/analytics";
 import { useContactConfig } from "../stores/portfolio-store";
 
 const baseNavigationItems = [
@@ -149,6 +150,8 @@ export function Navbar() {
   }, []);
 
   const scrollToSection = (href: string) => {
+    const sectionId = href.replace("#", "");
+    trackNavigation(sectionId);
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
@@ -225,7 +228,10 @@ export function Navbar() {
             <ThemeToggle />
             {contactConfig.service !== "none" && (
               <Button
-                onClick={() => scrollToSection("#contact")}
+                onClick={() => {
+                  trackNavigation("contact");
+                  scrollToSection("#contact");
+                }}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground border-0 transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 Get In Touch

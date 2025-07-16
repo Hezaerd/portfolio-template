@@ -6,6 +6,8 @@ import { PortfolioProvider } from "@/components/providers/PortfolioProvider";
 import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
 import { EditOnboarding } from "@/components/onboarding/EditOnboarding";
 import { Toaster } from "@/components/ui/sonner";
+import { GoogleAnalytics } from "@next/third-parties/google";
+import { analyticsConfig } from "@/lib/settings";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -57,6 +59,7 @@ export default function RootLayout({
             </OnboardingProvider>
           </PortfolioProvider>
         </ThemeProvider>
+        <GoogleAnalytics gaId={analyticsConfig.gaId} />
       </body>
     </html>
   );

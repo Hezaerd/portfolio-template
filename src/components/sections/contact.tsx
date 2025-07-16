@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Mail, Send } from "lucide-react";
 import { motion } from "motion/react";
+import { trackContactForm } from "@/lib/analytics";
 import { useContactConfig } from "../../stores/portfolio-store";
 
 const contactFormSchema = z.object({
@@ -107,6 +108,7 @@ export function Contact() {
       }
 
       if (success) {
+        trackContactForm("submit");
         // Dismiss loading toast and show success
         toast.dismiss(loadingToast);
         toast.success("Message sent successfully!", {
@@ -120,6 +122,7 @@ export function Contact() {
         throw new Error("Failed to submit form");
       }
     } catch (error) {
+      trackContactForm("error");
       // Dismiss loading toast and show error
       toast.dismiss(loadingToast);
       toast.error("Failed to send message", {

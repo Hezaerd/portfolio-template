@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { personalInfo } from "@/data/personal-info";
 import { Github, Linkedin, Twitter, ExternalLink, Mail } from "lucide-react";
 import { motion } from "motion/react";
+import { trackSocialClick } from "@/lib/analytics";
 
 export function Footer() {
   return (
@@ -47,7 +48,10 @@ export function Footer() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => window.open(personalInfo.github, "_blank")}
+              onClick={() => {
+                trackSocialClick("github");
+                window.open(personalInfo.github, "_blank");
+              }}
               className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
             >
               <Github className="w-5 h-5" />
@@ -56,7 +60,10 @@ export function Footer() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => window.open(personalInfo.linkedin, "_blank")}
+              onClick={() => {
+                trackSocialClick("linkedin");
+                window.open(personalInfo.linkedin, "_blank");
+              }}
               className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
             >
               <Linkedin className="w-5 h-5" />
@@ -66,7 +73,10 @@ export function Footer() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => window.open(personalInfo.twitter!, "_blank")}
+                onClick={() => {
+                  trackSocialClick("twitter");
+                  window.open(personalInfo.twitter!, "_blank");
+                }}
                 className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
               >
                 <Twitter className="w-5 h-5" />
@@ -76,9 +86,10 @@ export function Footer() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() =>
-                window.open(`mailto:${personalInfo.email}`, "_blank")
-              }
+              onClick={() => {
+                trackSocialClick("email");
+                window.open(`mailto:${personalInfo.email}`, "_blank");
+              }}
               className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
             >
               <Mail className="w-5 h-5" />
@@ -88,7 +99,10 @@ export function Footer() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => window.open(personalInfo.website!, "_blank")}
+                onClick={() => {
+                  trackSocialClick("website");
+                  window.open(personalInfo.website!, "_blank");
+                }}
                 className="hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
               >
                 <ExternalLink className="w-5 h-5" />

@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { trackThemeChange } from "@/lib/analytics";
 
 export function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
@@ -28,7 +29,9 @@ export function ThemeToggle() {
   }
 
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    trackThemeChange(newTheme);
   };
 
   return (
