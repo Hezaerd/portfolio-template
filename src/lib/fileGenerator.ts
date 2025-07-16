@@ -64,6 +64,26 @@ export const generatePortfolioFiles = async (data: OnboardingData) => {
 
     console.log("✅ All portfolio files updated successfully!");
 
+    // Update environment variables if GitHub token is provided
+    if (data.githubToken && data.githubToken.trim()) {
+      try {
+        const envResponse = await fetch("/api/update-env", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ GITHUB_TOKEN: data.githubToken }),
+        });
+
+        const envResult = await envResponse.json();
+        if (envResult.success) {
+          console.log("✅ GitHub token saved to .env.local successfully!");
+        } else {
+          console.warn("⚠️ Failed to save GitHub token:", envResult.error);
+        }
+      } catch (error) {
+        console.error("❌ Error saving GitHub token:", error);
+      }
+    }
+
     // Reload Zustand store from the updated files to ensure consistency
     if (typeof window !== "undefined") {
       const { usePortfolioStore } = await import("../stores/portfolio-store");

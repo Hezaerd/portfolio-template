@@ -54,8 +54,8 @@ const steps = [
 ];
 
 export function GitHubStep() {
-  const { nextStep } = useOnboardingContext();
-  const [token, setToken] = useState("");
+  const { onboardingData, setValue } = useOnboardingContext();
+  const [token, setToken] = useState(onboardingData.githubToken || "");
   const [showToken, setShowToken] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
   const [isValid, setIsValid] = useState<boolean | null>(null);
@@ -91,62 +91,15 @@ export function GitHubStep() {
     setToken(value);
     setIsValid(null);
 
+    // Update context immediately
+    setValue("githubToken", value);
+
     // Debounce validation
     const timeoutId = setTimeout(() => {
       validateToken(value);
     }, 500);
 
     return () => clearTimeout(timeoutId);
-  };
-
-  const handleSave = async () => {
-    if (!token.trim()) {
-      toast.error("Please enter a GitHub token");
-      return;
-    }
-
-    if (isValid === false) {
-      toast.error("Please enter a valid GitHub token");
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/update-env", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ GITHUB_TOKEN: token }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        toast.success("GitHub token saved successfully!");
-        nextStep();
-      } else {
-        toast.error(data.error || "Failed to save GitHub token");
-      }
-    } catch (error) {
-      console.error("Error saving GitHub token:", error);
-      toast.error("Failed to save GitHub token");
-    }
-  };
-
-  const handleSkip = async () => {
-    try {
-      // Update env with empty token to indicate user chose to skip
-      await fetch("/api/update-env", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ GITHUB_TOKEN: "" }),
-      });
-    } catch (error) {
-      console.error("Error updating environment:", error);
-    }
-    nextStep();
   };
 
   return (
@@ -318,19 +271,6 @@ export function GitHubStep() {
             <p className="text-xs text-green-500 mt-1">✓ Valid GitHub token</p>
           )}
         </div>
-
-        <div className="flex justify-between space-x-4">
-          <Button variant="outline" onClick={handleSkip} className="flex-1">
-            Skip for now
-          </Button>
-          <Button
-            onClick={handleSave}
-            disabled={!token.trim() || isValid === false || isValidating}
-            className="flex-1"
-          >
-            {isValidating ? "Validating..." : "Save & Continue"}
-          </Button>
-        </div>
       </div>
 
       {/* Security Note */}
@@ -343,9 +283,9 @@ export function GitHubStep() {
                 Security Notice
               </p>
               <p className="text-amber-700 dark:text-amber-300">
-                Your token is stored locally and only used to fetch public
-                repository data. We recommend using a token with minimal
-                "public_repo" permissions only.
+                Your token is only used to fetch public repository data. We
+                recommend using a token with minimal "public_repo" permissions
+                only.
               </p>
             </div>
           </div>

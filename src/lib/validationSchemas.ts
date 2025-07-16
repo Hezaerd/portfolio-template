@@ -229,6 +229,7 @@ export const onboardingSchema = z.object({
     platform: "none",
     customDomain: "",
   }),
+  githubToken: z.string().optional().default(""),
 });
 
 // Export individual step schemas for validation

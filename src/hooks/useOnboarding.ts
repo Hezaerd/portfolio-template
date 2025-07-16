@@ -57,6 +57,7 @@ export interface OnboardingData {
     platform: "vercel" | "netlify" | "other" | "none";
     customDomain?: string;
   };
+  githubToken?: string;
 }
 
 export const defaultOnboardingData: OnboardingData = {
@@ -84,6 +85,7 @@ export const defaultOnboardingData: OnboardingData = {
   deployment: {
     platform: "none",
   },
+  githubToken: "",
 };
 
 export const useOnboarding = () => {
