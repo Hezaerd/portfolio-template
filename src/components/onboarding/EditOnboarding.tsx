@@ -11,7 +11,6 @@ import {
   Trash2,
   ChevronUp,
   ChevronDown,
-  RefreshCw,
   Settings,
   Info,
   FileText,
@@ -19,7 +18,6 @@ import {
 import { createDownloadLinks } from "@/lib/fileGenerator";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { usePortfolioUpdates } from "../../hooks/usePortfolioUpdates";
 
 export const EditOnboarding = () => {
   const {
@@ -31,11 +29,9 @@ export const EditOnboarding = () => {
     currentStep,
     setCurrentStep,
   } = useOnboardingContext();
-  const { reloadFromFiles } = usePortfolioUpdates();
   const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
   const [savedStep, setSavedStep] = useState<number | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isReloading, setIsReloading] = useState(false);
   const isDev = process.env.NODE_ENV === "development";
 
   const stepNames = [
@@ -99,17 +95,7 @@ export const EditOnboarding = () => {
     resetOnboarding();
   };
 
-  const handleReloadFromFiles = async () => {
-    setIsReloading(true);
-    try {
-      await reloadFromFiles();
-      console.log("✅ Data reloaded from files");
-    } catch (error) {
-      console.error("❌ Error reloading from files:", error);
-    } finally {
-      setIsReloading(false);
-    }
-  };
+
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -283,19 +269,6 @@ export const EditOnboarding = () => {
                     >
                       <Edit3 className="h-4 w-4" />
                       Edit Onboarding
-                    </Button>
-
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleReloadFromFiles}
-                      disabled={isReloading}
-                      className="w-full flex items-center gap-2 text-blue-600 hover:text-blue-700"
-                    >
-                      <RefreshCw
-                        className={`h-4 w-4 ${isReloading ? "animate-spin" : ""}`}
-                      />
-                      Reload from Files
                     </Button>
 
                     <Button
