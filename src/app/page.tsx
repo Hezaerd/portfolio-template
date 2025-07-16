@@ -9,6 +9,7 @@ import {
   Contact,
   Footer,
 } from "@/components/sections";
+import { ConditionalGitHubStats } from "@/components/ui/conditional-github-stats";
 import { useContactConfig } from "../stores/portfolio-store";
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
       <About />
       <Projects />
       <Resume />
+      <ConditionalGitHubStats />
       {contactConfig.service !== "none" && <Contact />}
       <Footer />
     </div>

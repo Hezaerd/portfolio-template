@@ -15,6 +15,7 @@ import { ResumeUploadStep } from "./steps/ResumeUploadStep";
 import { SkillsStep } from "./steps/SkillsStep";
 import { ExperienceStep } from "./steps/ExperienceStep";
 import { ProjectsStep } from "./steps/ProjectsStep";
+import { GitHubStep } from "./steps/GitHubStep";
 import { ThemeReferenceStep } from "./steps/ThemeReferenceStep";
 import { FinalSetupStep } from "./steps/FinalSetupStep";
 import { generatePortfolioFiles } from "@/lib/fileGenerator";
@@ -31,6 +32,7 @@ const steps = [
   { title: "Skills", component: SkillsStep },
   { title: "Experience", component: ExperienceStep },
   { title: "Projects", component: ProjectsStep },
+  { title: "GitHub Integration", component: GitHubStep },
   { title: "Form Setup", component: FinalSetupStep },
   { title: "Theme & Colors", component: ThemeReferenceStep },
 ];

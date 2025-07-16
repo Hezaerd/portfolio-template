@@ -17,7 +17,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Menu, Home, User, Briefcase, Mail, FileText } from "lucide-react";
+import {
+  Menu,
+  Home,
+  User,
+  Briefcase,
+  Mail,
+  FileText,
+  Github,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { trackNavigation } from "@/lib/analytics";
@@ -28,6 +36,7 @@ const baseNavigationItems = [
   { name: "About", href: "#about", icon: User },
   { name: "Projects", href: "#projects", icon: Briefcase },
   { name: "Resume", href: "#resume", icon: FileText },
+  { name: "GitHub", href: "#github-stats", icon: Github },
   { name: "Contact", href: "#contact", icon: Mail },
 ];
 
@@ -72,14 +81,34 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [underlineStyle, setUnderlineStyle] = useState({ width: 0, left: 0 });
+  const [isGitHubEnabled, setIsGitHubEnabled] = useState(false);
   const activeSection = useActiveSection();
   const contactConfig = useContactConfig();
   const navItemRefs = useRef<{ [key: string]: HTMLElement | null }>({});
   const navListRef = useRef<HTMLUListElement>(null);
 
-  // Filter navigation items based on contact config
+  // Check if GitHub is enabled
+  useEffect(() => {
+    const checkGitHubStatus = async () => {
+      try {
+        const response = await fetch("/api/github-enabled");
+        const data = await response.json();
+        setIsGitHubEnabled(data.enabled);
+      } catch (error) {
+        console.error("Failed to check GitHub status:", error);
+        setIsGitHubEnabled(false);
+      }
+    };
+
+    checkGitHubStatus();
+  }, []);
+
+  // Filter navigation items based on contact config and GitHub status
   const navigationItems = baseNavigationItems.filter(item => {
     if (item.name === "Contact" && contactConfig.service === "none") {
+      return false;
+    }
+    if (item.name === "GitHub" && !isGitHubEnabled) {
       return false;
     }
     return true;
