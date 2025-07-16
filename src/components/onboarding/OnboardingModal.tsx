@@ -22,6 +22,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import confetti from "canvas-confetti";
 
 const steps = [
   { title: "Personal Information", component: PersonalInfoStep },
@@ -144,6 +145,31 @@ export const OnboardingModal = () => {
 
     // Simply mark onboarding as complete - files are saved via "Save Progress"
     completeOnboarding();
+
+    // Check if this is the first time completing onboarding
+    const hasCompletedBefore = localStorage.getItem(
+      "onboarding-completed-before"
+    );
+    if (!hasCompletedBefore) {
+      // Trigger confetti explosion for first-time completion
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: [
+          "#3b82f6",
+          "#8b5cf6",
+          "#06b6d4",
+          "#10b981",
+          "#f59e0b",
+          "#ef4444",
+        ],
+        zIndex: 9999,
+      });
+
+      // Mark as completed
+      localStorage.setItem("onboarding-completed-before", "true");
+    }
 
     toast.success("Onboarding completed!", {
       description:

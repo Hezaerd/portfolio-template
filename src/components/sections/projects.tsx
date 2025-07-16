@@ -55,7 +55,7 @@ export function Projects() {
         "(min-width: 1024px)": { slidesToScroll: 3 },
       },
     },
-    [Autoplay({ delay: 4000, stopOnInteraction: false })]
+    [Autoplay({ delay: 4000, stopOnInteraction: true })]
   );
 
   const scrollPrev = useCallback(() => {
