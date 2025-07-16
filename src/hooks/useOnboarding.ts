@@ -15,6 +15,11 @@ export interface OnboardingData {
     twitter?: string;
     website?: string;
   };
+  resume: {
+    fileName: string; // e.g., "resume.pdf"
+    originalName: string; // Original file name from user
+    size: number;
+  };
   skills: string[];
   workExperience: {
     title: string;
@@ -63,6 +68,11 @@ export const defaultOnboardingData: OnboardingData = {
     email: "",
     github: "",
     linkedin: "",
+  },
+  resume: {
+    fileName: "",
+    originalName: "",
+    size: 0,
   },
   skills: [],
   workExperience: [],
@@ -115,12 +125,14 @@ export const useOnboarding = () => {
       // Import data directly from data files
       const [
         { personalInfo },
+        { resume },
         { skills },
         { workExperience, education },
         { projects },
         { contactConfig },
       ] = await Promise.all([
         import("../data/personal-info"),
+        import("../data/resume"),
         import("../data/skills"),
         import("../data/experience"),
         import("../data/projects"),
@@ -139,6 +151,11 @@ export const useOnboarding = () => {
           linkedin: personalInfo.linkedin || "",
           twitter: personalInfo.twitter || "",
           website: personalInfo.website || "",
+        },
+        resume: {
+          fileName: resume.fileName || "",
+          originalName: resume.originalName || "",
+          size: resume.size || 0,
         },
         skills: skills.length > 0 ? skills : [],
         workExperience: workExperience.length > 0 ? workExperience : [],
@@ -193,7 +210,7 @@ export const useOnboarding = () => {
       const savedStep = localStorage.getItem("onboarding-last-step");
       if (savedStep) {
         const stepNumber = parseInt(savedStep, 10);
-        if (stepNumber >= 0 && stepNumber < 6) {
+        if (stepNumber >= 0 && stepNumber < 7) {
           setCurrentStep(stepNumber);
         }
       }
@@ -216,11 +233,12 @@ export const useOnboarding = () => {
   const validateCurrentStep = useCallback(async () => {
     const stepFields = [
       ["personalInfo"], // Step 0
-      ["skills"], // Step 1
-      ["workExperience", "education"], // Step 2
-      ["projects"], // Step 3
-      ["contactForm", "deployment"], // Step 4 - Form Setup
-      [], // Step 5 - Theme step (no validation needed)
+      [], // Step 1 - Resume Upload (optional, no validation needed)
+      ["skills"], // Step 2
+      ["workExperience", "education"], // Step 3
+      ["projects"], // Step 4
+      ["contactForm", "deployment"], // Step 5 - Form Setup
+      [], // Step 6 - Theme step (no validation needed)
     ];
 
     const fieldsToValidate = stepFields[currentStep] || [];

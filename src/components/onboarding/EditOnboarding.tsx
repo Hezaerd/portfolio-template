@@ -40,6 +40,7 @@ export const EditOnboarding = () => {
 
   const stepNames = [
     "Personal Info",
+    "Resume Upload",
     "Skills",
     "Experience",
     "Projects",

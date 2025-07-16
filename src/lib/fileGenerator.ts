@@ -41,6 +41,13 @@ export const generatePortfolioFiles = async (data: OnboardingData) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ contactConfig: data.contactForm }),
       }),
+
+      // Update resume
+      fetch("/api/data/resume", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resume: data.resume }),
+      }),
     ];
 
     const responses = await Promise.all(updatePromises);

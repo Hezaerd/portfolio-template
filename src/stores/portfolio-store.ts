@@ -46,12 +46,19 @@ export interface Project {
   role?: string;
 }
 
+export interface Resume {
+  fileName: string; // e.g., "resume.pdf"
+  originalName: string; // Original file name from user
+  size: number;
+}
+
 export interface PortfolioState {
   // Configuration
   contactConfig: ContactConfig;
 
   // Data
   personalInfo: PersonalInfo;
+  resume: Resume;
   skills: string[];
   workExperience: WorkExperience[];
   education: Education[];
@@ -63,12 +70,14 @@ export interface PortfolioState {
   // Actions
   setContactConfig: (config: ContactConfig) => void;
   setPersonalInfo: (info: PersonalInfo) => void;
+  setResume: (resume: Resume) => void;
   setSkills: (skills: string[]) => void;
   setWorkExperience: (experience: WorkExperience[]) => void;
   setEducation: (education: Education[]) => void;
   setProjects: (projects: Project[]) => void;
   updateAllData: (data: {
     personalInfo?: PersonalInfo;
+    resume?: Resume;
     skills?: string[];
     workExperience?: WorkExperience[];
     education?: Education[];
@@ -100,6 +109,11 @@ export const usePortfolioStore = create<PortfolioState>()(
         github: "",
         linkedin: "",
       },
+      resume: {
+        fileName: "",
+        originalName: "",
+        size: 0,
+      },
       skills: [],
       workExperience: [],
       education: [],
@@ -113,6 +127,10 @@ export const usePortfolioStore = create<PortfolioState>()(
 
       setPersonalInfo: (info: PersonalInfo) => {
         set({ personalInfo: info });
+      },
+
+      setResume: (resume: Resume) => {
+        set({ resume });
       },
 
       setSkills: (skills: string[]) => {
@@ -149,12 +167,14 @@ export const usePortfolioStore = create<PortfolioState>()(
           const cacheBuster = Date.now();
           const [
             personalInfoModule,
+            resumeModule,
             skillsModule,
             experienceModule,
             projectsModule,
             contactConfigModule,
           ] = await Promise.all([
             import(`../data/personal-info?v=${cacheBuster}`),
+            import(`../data/resume?v=${cacheBuster}`),
             import(`../data/skills?v=${cacheBuster}`),
             import(`../data/experience?v=${cacheBuster}`),
             import(`../data/projects?v=${cacheBuster}`),
@@ -163,6 +183,7 @@ export const usePortfolioStore = create<PortfolioState>()(
 
           set({
             personalInfo: personalInfoModule.personalInfo,
+            resume: resumeModule.resume,
             skills: skillsModule.skills,
             workExperience: experienceModule.workExperience,
             education: experienceModule.education,
@@ -189,6 +210,7 @@ export const usePortfolioStore = create<PortfolioState>()(
       partialize: state => ({
         contactConfig: state.contactConfig,
         personalInfo: state.personalInfo,
+        resume: state.resume,
         skills: state.skills,
         workExperience: state.workExperience,
         education: state.education,

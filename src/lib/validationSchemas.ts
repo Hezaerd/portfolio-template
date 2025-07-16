@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+// Resume Upload Step Schema
+export const resumeSchema = z.object({
+  fileName: z.string().optional().or(z.literal("")),
+  originalName: z.string().optional().or(z.literal("")),
+  size: z.number().optional().default(0),
+});
+
 // Personal Information Step Schema
 export const personalInfoSchema = z.object({
   name: z
@@ -205,6 +212,11 @@ export const finalSetupSchema = z.object({
 // Complete Onboarding Schema
 export const onboardingSchema = z.object({
   personalInfo: personalInfoSchema,
+  resume: resumeSchema.default({
+    fileName: "",
+    originalName: "",
+    size: 0,
+  }),
   skills: z.array(z.string()).default([]),
   workExperience: z.array(workExperienceSchema).default([]),
   education: z.array(educationSchema).default([]),

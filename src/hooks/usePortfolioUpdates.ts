@@ -9,6 +9,7 @@ export const usePortfolioUpdates = () => {
   const {
     setContactConfig,
     setPersonalInfo,
+    setResume,
     setSkills,
     setWorkExperience,
     setEducation,
@@ -20,6 +21,7 @@ export const usePortfolioUpdates = () => {
   const updatePortfolioData = (data: OnboardingData) => {
     updateAllData({
       personalInfo: data.personalInfo,
+      resume: data.resume,
       skills: data.skills,
       workExperience: data.workExperience,
       education: data.education,
@@ -39,6 +41,7 @@ export const usePortfolioUpdates = () => {
     updatePortfolioData,
     updateContactConfig,
     setPersonalInfo,
+    setResume,
     setSkills,
     setWorkExperience,
     setEducation,

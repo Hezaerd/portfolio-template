@@ -4,7 +4,10 @@ import { Button } from "@/components/ui/button";
 import { FolderGit2, Wrench } from "lucide-react";
 import { motion } from "motion/react";
 import { trackNavigation, trackResumeDownload } from "@/lib/analytics";
-import { usePersonalInfo } from "../../stores/portfolio-store";
+import {
+  usePersonalInfo,
+  usePortfolioStore,
+} from "../../stores/portfolio-store";
 
 // Lightweight animation variants
 const fadeIn = {
@@ -21,6 +24,7 @@ const slideUp = {
 
 export function Hero() {
   const personalInfo = usePersonalInfo();
+  const resume = usePortfolioStore(state => state.resume);
 
   return (
     <section
@@ -67,18 +71,20 @@ export function Hero() {
             <FolderGit2 className="w-5 h-5" />
             View Portfolio
           </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => {
-              trackResumeDownload();
-              // Add your resume download logic here
-              console.log("Resume download clicked");
-            }}
-          >
-            <Wrench className="w-5 h-5" />
-            Download Resume
-          </Button>
+          {resume.fileName && (
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => {
+                trackResumeDownload();
+                // Download the resume file from public directory
+                window.open(`/${resume.fileName}`, "_blank");
+              }}
+            >
+              <Wrench className="w-5 h-5" />
+              Download Resume
+            </Button>
+          )}
         </motion.div>
       </div>
     </section>

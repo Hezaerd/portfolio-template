@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { Form } from "@/components/ui/form";
 import { useOnboardingContext } from "@/contexts/OnboardingContext";
 import { PersonalInfoStep } from "./steps/PersonalInfoStep";
+import { ResumeUploadStep } from "./steps/ResumeUploadStep";
 import { SkillsStep } from "./steps/SkillsStep";
 import { ExperienceStep } from "./steps/ExperienceStep";
 import { ProjectsStep } from "./steps/ProjectsStep";
@@ -26,6 +27,7 @@ import confetti from "canvas-confetti";
 
 const steps = [
   { title: "Personal Information", component: PersonalInfoStep },
+  { title: "Resume Upload", component: ResumeUploadStep },
   { title: "Skills", component: SkillsStep },
   { title: "Experience", component: ExperienceStep },
   { title: "Projects", component: ProjectsStep },
@@ -183,11 +185,12 @@ export const OnboardingModal = () => {
   const getCurrentStepErrors = () => {
     const stepFieldMaps = [
       ["personalInfo"], // Step 0
-      ["skills"], // Step 1
-      ["workExperience", "education"], // Step 2
-      ["projects"], // Step 3
-      ["contactForm", "deployment"], // Step 4 - Form Setup
-      [], // Step 5 - Theme step
+      [], // Step 1 - Resume Upload (optional, no validation needed)
+      ["skills"], // Step 2
+      ["workExperience", "education"], // Step 3
+      ["projects"], // Step 4
+      ["contactForm", "deployment"], // Step 5 - Form Setup
+      [], // Step 6 - Theme step
     ];
 
     const fieldNames = stepFieldMaps[currentStep] || [];
